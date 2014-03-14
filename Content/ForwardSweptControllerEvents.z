@@ -1,0 +1,27 @@
+class ForwardSweptControllerEvents : ScriptComponent
+{
+    [Dependency]
+    var CustomCollisionEventTracker : CustomCollisionEventTracker = null;
+    
+    constructor() : base()
+    {
+    }
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, "SweptCollision", this.OnSweptCollision);
+        Zero.Connect(this.Owner, "GroundSnapCollision", this.OnSweptCollision);
+        Zero.Connect(this.Owner, "SweptCompleted", this.OnSweptCompleted);
+    }
+    
+    function OnSweptCollision(sweptEvent : SweptControllerEvent)
+    {
+        var result = sweptEvent.Result;
+        this.CustomCollisionEventTracker.AddCollision(result.OtherCollider, result.WorldPoint, result.WorldNormalTowardsOther);
+    }
+    
+    function OnSweptCompleted(emptyEvent : Event)
+    {
+        this.CustomCollisionEventTracker.SendEvents("Collision");
+    }
+}

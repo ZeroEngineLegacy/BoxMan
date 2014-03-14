@@ -1,0 +1,483 @@
+// Fix all comments to be less terse and not suck
+// Add periods.
+// Explain difference between sweep and controller velocity more thoroughly
+
+// Character controller is not affected by physics update
+class SweptControllerZ : ScriptComponent
+{
+    // Normal of the world's ground plane
+    // Used to decompose movement into horizontal and vertical pieces
+    // Used to determine what surfaces are walkable
+    [Property]
+    var WorldUp : Real3 = local Real3(0.0, 1.0, 0.0);
+    // Prevents any swept movement on the z-axis
+    [Property]
+    var LockZAxis : Boolean = false;
+    // Constant acceleration against WorldUp when not on ground
+    [Property]
+    var Gravity : Real = 20.0;
+    // Instantanious velocity in the WorldUp direction when jump is activated
+    [Property]
+    var JumpSpeed : Real = 10.0;
+    // Maximum speed you can accelerate to in the horizontal direction
+    [Property]
+    var MaxMoveSpeed : Real = 10.0;
+    // Maximum speed you can fall at
+    [Property]
+    var MaxFallSpeed : Real = 50.0;
+    // Increase in movement velocity per second on ground/in air
+    [Property]
+    var GroundAcceleration : Real = 30.0;
+    [Property]
+    var AirAcceleration : Real = 15.0;
+    // Decrease in movement velocity per second on ground/in air
+    // Not applied against direction of input
+    // Prevents side-slipping when changing directions
+    // Adds to acceleration when moving against current velocity
+    [Property]
+    var GroundDeceleration : Real = 30.0;
+    [Property]
+    var AirDeceleration : Real = 15.0;
+    // Maximum angle, in degrees, that a surface is considered ground
+    // Ground can be walked on and jumped off of
+    // A value of 0 means only flat surfaces are walkable
+    // A value near 90 means almost all surface are walkable
+    [Property]
+    var MaxGroundSlope : Real = 45.0;
+    // Maximum angle, in degrees, that a surface is considered a ceiling
+    // Used to prevent collide and slide along a ceiling surface
+    // Stops upward velocity when jumping into the ceiling
+    [Property]
+    var MaxCeilingSlope : Real = 45.0;
+    // Maximum distance that the player will be projected down
+    // maintaining connection to the ground, only when grounded
+    [Property]
+    var GroundSnapDistance : Real = 0.1;
+    
+    // The velocity that reflects the intended movement
+    // Does not reflect the RigidBody's actual velocity
+    // Should not be accessed/modified outside of this script
+    [Serialized]
+    var ControllerVelocity : Real3 = local Real3(0.0, 0.0, 0.0);
+    // Controller state for being on a ground surface
+    // Determines movement acceleration types,
+    // whether gravity is applied, and if jumping is possible
+    [Serialized]
+    var Grounded : Boolean = true;
+    // Controller state for knowing if jump is active
+    // Used for variable jump heights
+    [Serialized]
+    var Jumping : Boolean = false;
+    
+    var CastFilter : CastFilter = null;
+    
+    sends SweptCollision : SweptControllerEvent;
+    sends GroundSnapCollision : SweptControllerEvent;
+    
+    constructor() : base()
+    {
+    }
+
+    function Initialize(init : CogInitializer)
+    {
+        this.CastFilter = this.Space.PhysicsSpace.CreateDefaultCastFilter();
+        this.CastFilter.SetIgnoreChildren(true);
+        this.CastFilter.SetIgnoreDynamic(true);
+        this.CastFilter.SetIgnoreGhost(true);
+        this.CastFilter.SetIgnoreKinematic(true);
+        
+        this.SetWorldUp(this.WorldUp);
+    }
+    
+    // Utility function for changing WorldUp at run time
+    function SetWorldUp(direction : Real3)
+    {
+        // Normalize whatever direction is given
+        // If the zero vector is ever given,
+        // the controller will just float around
+        this.WorldUp = Math.Normalize(direction);
+    }
+    
+    // Measures angle between suface normal and WorldUp
+    // to determine if surface is ground
+    function IsGroundSurface(normal : Real3) : Boolean
+    {
+        var cosineOfAngle = Math.Dot(normal, this.WorldUp);
+        cosineOfAngle = Math.Clamp(cosineOfAngle, -1.0, 1.0);
+        var angle = Math.ACos(cosineOfAngle);
+        return Math.ToDegrees(angle) <= this.MaxGroundSlope;
+    }
+        
+    // Measures angle between suface normal and negative WorldUp
+    // to determine if surface is ceiling
+    function IsCeilingSurface(normal : Real3) : Boolean
+    {
+        var cosineOfAngle = Math.Dot(normal, -this.WorldUp);
+        cosineOfAngle = Math.Clamp(cosineOfAngle, -1.0, 1.0);
+        var angle = Math.ACos(cosineOfAngle);
+        return Math.ToDegrees(angle) <= this.MaxCeilingSlope;
+    }
+        
+    // Should be called before Update when the user presses their jump button
+    function GroundJump()
+    {
+        // Can only jump if grounded
+        if (this.Grounded)
+        {
+            this.ControllerVelocity += this.WorldUp * this.JumpSpeed;
+            this.Grounded = false;
+            this.Jumping = true;
+        }
+    }
+    
+    function ForcedJump()
+    {
+        this.ControllerVelocity -= Math.Project(this.ControllerVelocity, this.WorldUp);
+        this.ControllerVelocity += this.WorldUp * this.JumpSpeed;
+        this.Grounded = false;
+        this.Jumping = true;
+    }
+    
+    function DirectionalJump(horizontalVelocity : Real3)
+    {
+        this.ControllerVelocity = horizontalVelocity + this.WorldUp * this.JumpSpeed;
+        this.Grounded = false;
+        this.Jumping = true;
+    }
+            
+    // Should be called before Update when the user releases their jump button
+    function JumpEnd()
+    {
+        // If jump is released while still moving upward
+        // this will half the remaining velocity to make a shorter jump
+        // with a fairly smooth transition
+        // Holding jump longer will make a higher jump
+        if (this.Jumping && Math.Dot(this.ControllerVelocity, this.WorldUp) > 0.0)
+        {
+            this.ControllerVelocity -= Math.Project(this.ControllerVelocity, this.WorldUp) * 0.9;
+        }
+        this.Jumping = false;
+    }
+    
+    // Must be called once per logic update to work correctly
+    function Update(movement : Real3, dt : Real)
+    {
+        // Caller not required to pass a normalized direction
+        movement = movement - Math.Project(movement, this.WorldUp);
+        movement = Math.Normalize(movement);
+            
+        // Decompose velocity directions so that
+        // movement logic can be independent of jumping/falling
+        var verticalVelocity = Math.Project(this.ControllerVelocity, this.WorldUp);
+        var horizontalVelocity = this.ControllerVelocity - verticalVelocity;
+        
+        // Get acceleration types
+        var accel : Real = 0.0;
+        var decel : Real = 0.0;
+        if (this.Grounded)
+        {
+            accel = this.GroundAcceleration * dt;
+            decel = this.GroundDeceleration * dt;
+        }
+        else
+        {
+            accel = this.AirAcceleration * dt;
+            decel = this.AirDeceleration * dt;
+        }
+            
+        // Get velocity directions relative to input movement
+        var forwardVelocity = Math.Project(horizontalVelocity, movement);
+        var sideVelocity = horizontalVelocity - forwardVelocity;
+        // Accelerate in the direction of movement
+        horizontalVelocity += movement * accel;
+        // Decelerate velocity that is not aligned with movement
+        // sideVelocity equals horizontalVelocity when movement is zero
+        // This will decelerate to zero when no input movement is given
+        // Deceleration amount can only take velocity to zero, not backwards
+        var cappedDecel = Math.Min(Math.Length(sideVelocity), decel);
+        horizontalVelocity -= Math.Normalize(sideVelocity) * cappedDecel;
+        // If movement is against current velocity, apply deceleration to assist movement
+        if (Math.Dot(forwardVelocity, movement) < 0.0)
+        {
+            cappedDecel = Math.Min(Math.Length(forwardVelocity), decel);
+            horizontalVelocity -= Math.Normalize(forwardVelocity) * cappedDecel;
+        }
+        
+        // Cap end result at max speed
+        var cappedSpeed = Math.Min(Math.Length(horizontalVelocity), this.MaxMoveSpeed);
+        horizontalVelocity = Math.Normalize(horizontalVelocity) * cappedSpeed;
+        
+        if (this.Grounded)
+        {
+            // Only sweeping should cause vertical velocity when grounded
+            verticalVelocity = local Real3(0.0, 0.0, 0.0);
+        }
+        else
+        {
+            // Gravity is in opposite direction of WorldUp
+            verticalVelocity -= this.WorldUp * this.Gravity * dt;
+            // This will cap velocity in both upward and downward directions
+            // Can be modified to cap just one direction or removed entirely
+            cappedSpeed = Math.Min(Math.Length(verticalVelocity), this.MaxFallSpeed);
+            verticalVelocity = Math.Normalize(verticalVelocity) * cappedSpeed;
+        }
+        
+        // Recompose velocity directions
+        this.ControllerVelocity = horizontalVelocity + verticalVelocity;
+        
+        // Run swept collision
+        this.SweptCollision(this.ControllerVelocity, dt);
+        
+        // Ground snap test
+        this.SnapToGround();
+        
+        this.Owner.DispatchEvent("SweptCompleted", new Event());
+    }
+    
+    function SweptCollision(sweepVelocity : Real3, timeLeft : Real)
+    {
+        // Used to keep track of consecutive contacted walls to detect
+        // unsolvable configurations that require special handling
+        // A wall is simply anything that is neither the ground or ceiling
+        var wallNormals = new Array[Real3]();
+        
+        // The number of iterations used is arbitrary
+        // Really bad geometry scenarios tend to take 10-20 iterations to resolve
+        // Almost always takes only a couple iterations otherwise
+        // 20 iterations was found to behave well through lots of testing
+        for (var iterCount = 0; iterCount < 20; ++iterCount)
+        {
+            // Used to denote when a collision that can be resolved was found in the sweep
+            var collision = false;
+            
+            // Locking the z-axis will prevent any movement on that axis
+            // The rest of the vector projections are done generically
+            // Any resulting velocity along z is just removed before the sweep query
+            if (this.LockZAxis)
+            {
+                sweepVelocity.Z = 0.0;
+            }
+            
+            // ContinuousCollider computes the time of impact for every static object encountered in
+            // the collider's trajectory with the given velocity and timestep
+            // sorted by first time of impact
+            var continuousResultRange = this.Space.PhysicsSpace.ContinuousCollider(this.Owner.Collider, sweepVelocity, timeLeft, this.CastFilter);
+            foreach (var result in continuousResultRange)
+            {
+                // Contact normal will always point towards the querying object
+                var normal = result.WorldNormalTowardsSelf;
+                // Get velocity relative to the direction of the contacted surface
+                var relativeVel = -Math.Dot(normal, sweepVelocity);
+                
+                // Check for separating velocity
+                // Considering near zero relative velocities will waste iterations on numerical error
+                // and lock up possible movement for the controller
+                if (relativeVel < 0.001) { continue; }
+                    
+                this.SendCollisionEvent(Events.SweptCollision, result);
+                    
+                // Move forward to the first time of impact
+                timeLeft -= result.Time;
+                this.Owner.Transform.Translation += sweepVelocity * result.Time;
+                
+                // Determine the nature of the contacted surface
+                var ground = this.IsGroundSurface(normal);
+                var ceiling = this.IsCeilingSurface(normal);
+                
+                // Jumping upward into the ceiling
+                if (ceiling && !this.Grounded && Math.Dot(this.ControllerVelocity, this.WorldUp) > 0.0)
+                {
+                    // Remove vertical velocity for sweep AND controller
+                    // because this is a permanent velocity change for future logic updates
+                    sweepVelocity -= Math.Project(sweepVelocity, this.WorldUp);
+                    this.ControllerVelocity -= Math.Project(this.ControllerVelocity, this.WorldUp);
+                }
+                // Walking into a wall/ceiling while on ground
+                else if (!ground && this.Grounded)
+                {
+                    // Project out horizontally
+                    var horizontalNormal = normal - Math.Project(normal, this.WorldUp);
+                    horizontalNormal = Math.Normalize(horizontalNormal);
+                    sweepVelocity -= Math.Project(sweepVelocity, horizontalNormal);
+                }
+                // Falling onto the ground
+                else if (ground && !this.Grounded)
+                {
+                   // Remove vertical velocity only on first impact with ground
+                    this.ControllerVelocity -= Math.Project(this.ControllerVelocity, this.WorldUp);
+                    // Continue sweep using the controller's horizontal velocity
+                    // so that landing on a slope while moving does not cause a large change in velicity
+                    sweepVelocity = this.ControllerVelocity;
+                    // Need to set grounded as soon as it happens so that the following
+                    // iterations behave with the correct conditions
+                    // And so that this case is not repeated in the same update
+                    this.Grounded = true;
+                }
+                else if (ground && this.Grounded)
+                {
+                    sweepVelocity -= Math.Project(sweepVelocity, normal);
+                    
+                    var verticalSweep = Math.Project(sweepVelocity, this.WorldUp);
+                    var horizontalSweep = sweepVelocity - verticalSweep;
+                    var currentSpeed = Math.Length(horizontalSweep);
+                    
+                    if (currentSpeed != 0.0)
+                    {
+                        var speed = Math.Length(this.ControllerVelocity);
+                        var scaleDiff = speed / currentSpeed;
+                        horizontalSweep *= scaleDiff;
+                        verticalSweep *= scaleDiff;
+                        sweepVelocity = horizontalSweep + verticalSweep;
+                    }
+                }
+                // All non specific behavior cases
+                else
+                {
+                    // Project out all velocity that's in the direction of the contact surface
+                    sweepVelocity -= Math.Project(sweepVelocity, normal);
+                }
+                    
+                // When contacting a wall, don't want any velocity into the wall to persist between updates
+                if (!ground && !ceiling)
+                {
+                    // Want the horizontal result of the sweep so that velocity does not persist
+                    // in the direction of walls
+                    // The persisting vertical component still depends on the ControllerVelocity
+                    // so that it behaves the same on ground and in air
+                    var horizontalSweep = sweepVelocity - Math.Project(sweepVelocity, this.WorldUp);
+                    var verticalVelocity = Math.Project(this.ControllerVelocity, this.WorldUp);
+                    var horizontalVelocity = this.ControllerVelocity - verticalVelocity;
+                    // Don't want to take the sweep velocity if it's in the opposite direction,
+                    // otherwise falling down a sloped wall onto the ground will cause it to
+                    // slide backwards instead of stopping on the ground
+                    if (Math.Dot(horizontalSweep, horizontalVelocity) > 0.0 || Math.Length(horizontalSweep) == 0.0)
+                    {
+                        this.ControllerVelocity = horizontalSweep + verticalVelocity;
+                    }
+                    
+                    // Add wall surface information
+                    wallNormals.Push(normal);
+                }
+                else
+                {
+                    // Clear any previous wall data if this contact is not a wall
+                    wallNormals.Clear();
+                }
+                    
+                // Only resolve the first non-separating contact
+                collision = true;
+                break;
+            }
+                
+            // Swept from one wall into another
+            if (wallNormals.Count == 2)
+            {
+                // Check for acute angle between walls
+                // If angle is acute (less than 90 degrees), then sweep will project back and forth
+                // between walls forever without any progress
+                // Problem must be solved relative to the axis created by both walls
+                if (Math.Dot(wallNormals.Get(0), wallNormals.Get(1)) < 0.0)
+                {
+                    // Get axis of plane intersection, direction does not matter since
+                    // it is only used to be projected onto
+                    // Must be normalized to maintain correct velocity magnitudes
+                    var slopeAxis = Math.Cross(wallNormals.Get(0), wallNormals.Get(1));
+                    slopeAxis = Math.Normalize(slopeAxis);
+                    // Check if perpendicular to world up
+                    if (Math.Dot(slopeAxis, this.WorldUp) == 0.0)
+                    {
+                        // Only use projected horizontal velocity
+                        // When the slope does not allow falling, still allow horizontal movement
+                        // so the configuration can attempt to be walked out of
+                        sweepVelocity = Math.Project(sweepVelocity, slopeAxis);
+                        this.ControllerVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
+                    }
+                    else
+                    {
+                        // Only use projected vertical velocity
+                        // Only vertical velocity should persist on ControllerVelocity to allow falling
+                        this.ControllerVelocity = Math.Project(this.ControllerVelocity, this.WorldUp);
+                        // Sweep should continue along the slope but move at the
+                        // speed of the velocity due to gravity
+                        sweepVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
+                        sweepVelocity = Math.Normalize(sweepVelocity);
+                        sweepVelocity *= Math.Length(this.ControllerVelocity);
+                    }
+                    // Clear wall data after resolving
+                    wallNormals.Clear();
+                }
+                else
+                {
+                    // Only keep normal from last wall hit for future conditions
+                    wallNormals.Set(0, wallNormals.Get(1));
+                    wallNormals.Pop();
+                }
+            }
+            
+            // No intersections from sweep
+            if (!collision)
+            {
+                // Integrate remaining time step
+                this.Owner.Transform.Translation += sweepVelocity * timeLeft;
+                // End interations
+                break;
+            }
+        }
+    }
+    
+    function SnapToGround()
+    {
+        // A simple downward cast for snapping the player to the ground
+        if (this.Grounded)
+        {
+            // Will not remain grounded unless ground is still below the player
+            this.Grounded = false;
+            // Maximum distance allowed to snap in opposite direction of WorldUp
+            var maxDisplacement = this.WorldUp * -this.GroundSnapDistance;
+            
+            // Passing a timestep of 1 makes a displacement no different than velocity
+            // Time of impacts will return a value between 0 and 1,
+            // effectively parameterizing the allowed snap distance
+            var continuousResultRange = this.Space.PhysicsSpace.ContinuousCollider(this.Owner.Collider, maxDisplacement, 1.0, this.CastFilter);
+            foreach (var result in continuousResultRange)
+            {
+                var normal = result.WorldNormalTowardsSelf;
+                var relativeVel = -Math.Dot(normal, maxDisplacement);
+                
+                if (relativeVel < 0.001) { continue; }
+                
+                // Skip everything that's not ground
+                // Doesn't matter if something else is hit first because the controller
+                // shouldn't unground when on the edge of the ground and a wall slope simultaniously
+                // The allowed distance from the ground is meant to be fairly small anyway
+                if (!this.IsGroundSurface(normal)) { continue; }
+                    
+                this.SendCollisionEvent(Events.GroundSnapCollision, result);
+                
+                // Move player to the ground
+                this.Owner.Transform.Translation += maxDisplacement * result.Time;
+                this.Grounded = true;
+                break;
+            }
+        }
+    }
+    
+    function SendCollisionEvent(eventName : String, result : ContinuousResult)
+    {
+        this.Owner.DispatchEvent(eventName, new SweptControllerEvent(result));
+    }
+}
+
+class SweptControllerEvent : Event
+{
+    var Result : ContinuousResult = null;
+    
+    constructor() : base()
+    {
+    }
+    
+    constructor(result : ContinuousResult) : base()
+    {
+        this.Result = result;
+    }
+}

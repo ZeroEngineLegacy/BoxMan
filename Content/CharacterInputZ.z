@@ -1,0 +1,77 @@
+class CharacterInputZ : ScriptComponent
+{
+    [Dependency]
+    var Controller : SweptControllerZ = null;
+    
+    [Property]
+    var Projectile : Archetype = null;
+    
+    constructor() : base()
+    {
+    }
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(updateEvent : UpdateEvent)
+    {
+        var movement = local Real3(0.0, 0.0, 0.0);
+        
+        if (Zero.Keyboard.KeyIsDown(Keys.Right))
+        {
+            movement.X += 1.0;
+        }
+        if (Zero.Keyboard.KeyIsDown(Keys.Left))
+        {
+            movement.X -= 1.0;
+        }
+        
+        if (this.Owner.SweptControllerZ.Grounded)
+        {
+            if (Zero.Keyboard.KeyIsDown(Keys.Shift))
+            {
+                this.Owner.SweptControllerZ.MaxMoveSpeed = 20.0;
+            }
+            else
+            {
+                this.Owner.SweptControllerZ.MaxMoveSpeed = 10.0;
+            }
+        }
+        else if (Math.Abs(this.Owner.SweptControllerZ.ControllerVelocity.X) <= 10.0)
+        {
+            this.Owner.SweptControllerZ.MaxMoveSpeed = 10.0;
+        }
+        
+        // Shoots a cube, not that important
+        if (Zero.Keyboard.KeyIsPressed(Keys.Space))
+        {
+            var cog = this.Space.Create(this.Projectile);
+            if (cog != null)
+            {
+                if (this.Owner.AnimationController.Child.Cog.Sprite.FlipX)
+                {
+                    cog.Transform.Translation = this.Owner.Transform.Translation + local Real3(-0.5, 0.0, 0.0);
+                    cog.RigidBody.Velocity = local Real3(-50.0, 0.0, 0.0);
+                }
+                else
+                {
+                    cog.Transform.Translation = this.Owner.Transform.Translation + local Real3(0.5, 0.0, 0.0);
+                    cog.RigidBody.Velocity = local Real3(50.0, 0.0, 0.0);
+                }
+            }
+        }
+        
+        if (Zero.Keyboard.KeyIsPressed(Keys.Up))
+        {
+            this.Controller.GroundJump();
+        }
+        if (!Zero.Keyboard.KeyIsDown(Keys.Space) && !Zero.Keyboard.KeyIsDown(Keys.Up))
+        {
+            this.Controller.JumpEnd();
+        }
+            
+        this.Controller.Update(movement, updateEvent.Dt);
+    }
+}
