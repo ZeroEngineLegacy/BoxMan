@@ -26,6 +26,7 @@ ContentLibrary =
 		"PlayerFollow.z",
 		"PlayerSpawner.z",
 		"RightSlope.png",
+		"RunTest.py",
 		"Sector0101.Level.data",
 		"Sector0102.Level.data",
 		"Sector0102_TileMap00.bin",
