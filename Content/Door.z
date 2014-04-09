@@ -14,7 +14,7 @@ class Door : ScriptComponent
     var ToLevel : Level = null;
     
     [Property]
-    var FromDirection : Integer = Direction.Left;
+    var FromDirection : Direction = Direction.Left;
     
     constructor() : base()
     {
