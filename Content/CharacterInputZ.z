@@ -1,4 +1,4 @@
-class CharacterInputZ : ScriptComponent
+class CharacterInputZ : ZilchComponent
 {
     [Dependency]
     var Controller : SweptControllerZ = null;

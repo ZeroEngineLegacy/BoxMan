@@ -1,4 +1,4 @@
-class PlayerFollow : ScriptComponent
+class PlayerFollow : ZilchComponent
 {
     [Property]
     var PlayerObject : CogPath = null;

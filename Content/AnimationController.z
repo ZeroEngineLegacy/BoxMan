@@ -1,4 +1,4 @@
-class AnimationController : ScriptComponent
+class AnimationController : ZilchComponent
 {
     [Property]
     var Child : CogPath = null;

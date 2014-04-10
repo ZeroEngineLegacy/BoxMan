@@ -1,4 +1,4 @@
-class ForwardSweptControllerEvents : ScriptComponent
+class ForwardSweptControllerEvents : ZilchComponent
 {
     [Dependency]
     var CustomCollisionEventTracker : CustomCollisionEventTracker = null;

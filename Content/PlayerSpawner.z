@@ -1,4 +1,4 @@
-class PlayerSpawner : ScriptComponent
+class PlayerSpawner : ZilchComponent
 {
     [Property]
     var PlayerArchetype : Archetype = null;
