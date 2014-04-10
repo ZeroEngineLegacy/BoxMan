@@ -6,7 +6,7 @@
 
 // Character controller is independent of physics update.
 // The RigidBody is expected to be Kinematic when using this controller.
-class SweptControllerZ : ScriptComponent
+class SweptControllerZ : ZilchComponent
 {
     [Dependency]
     var Transform : Transform = null;
@@ -263,6 +263,13 @@ class SweptControllerZ : ScriptComponent
 
         // Recompose velocity directions.
         this.ControllerVelocity = horizontalVelocity + verticalVelocity;
+        
+        // Makes sure jumping flag is removed when velocity is not upwards,
+        // so that the flag can be used for other behavior.
+        if (Math.Dot(this.ControllerVelocity, this.WorldUp) <= 0.0)
+        {
+            this.Jumping = false;
+        }
 
         // Does a "collide and slide" like behavior, starting with ControllerVelocity.
         this.SweptCollision(this.ControllerVelocity, dt);
@@ -348,7 +355,7 @@ class SweptControllerZ : ScriptComponent
                     sweepVelocity -= Math.Project(sweepVelocity, horizontalNormal);
                 }
                 // Falling onto the ground.
-                // If moving up a slope fast enough and then jumping, hitting the ground can cancel a jump,
+                // If moving up a slope fast enough and then jumping, contacting the ground can cancel a jump,
                 // the check for jumping is to prevent that and can be removed if desired.
                 else if (ground && !this.Grounded && !this.Jumping)
                 {
