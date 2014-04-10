@@ -8,13 +8,13 @@ enum Direction
     Down   // 3
 }
 
-class Door : ScriptComponent
+class Door : ZilchComponent
 {
     [Property]
     var ToLevel : Level = null;
     
     [Property]
-    var FromDirection : Integer = Direction.Left;
+    var FromDirection : Direction = Direction.Left;
     
     constructor() : base()
     {

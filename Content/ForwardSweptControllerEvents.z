@@ -1,4 +1,4 @@
-class ForwardSweptControllerEvents : ScriptComponent
+class ForwardSweptControllerEvents : ZilchComponent
 {
     [Dependency]
     var CustomCollisionEventTracker : CustomCollisionEventTracker = null;
@@ -20,7 +20,7 @@ class ForwardSweptControllerEvents : ScriptComponent
         this.CustomCollisionEventTracker.AddCollision(result.OtherCollider, result.WorldPoint, result.WorldNormalTowardsOther);
     }
     
-    function OnSweptCompleted(emptyEvent : Event)
+    function OnSweptCompleted(emptyEvent : ZilchEvent)
     {
         this.CustomCollisionEventTracker.SendEvents("Collision");
     }
