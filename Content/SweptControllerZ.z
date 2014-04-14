@@ -112,9 +112,9 @@ class SweptControllerZ : ZilchComponent
     {
         // Only want to resolve collision with pure static objects.
         this.CastFilter = this.Space.PhysicsSpace.CreateDefaultCastFilter();
-        this.CastFilter.SetIgnoreDynamic(true);
-        this.CastFilter.SetIgnoreGhost(true);
-        this.CastFilter.SetIgnoreKinematic(true);
+        this.CastFilter.IgnoreDynamic = true;
+        this.CastFilter.IgnoreGhost = true;
+        this.CastFilter.IgnoreKinematic = true;
 
         // Called in init so that the values set in the property grid
         // don't have to be normalized.
