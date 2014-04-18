@@ -30,8 +30,8 @@ class Door : ZilchComponent
         if (collisionEvent.OtherObject.Name == "Player")
         {
             Zero.ObjectStore.Store("Player", collisionEvent.OtherObject);
-            Zero.Game.LevelData.FromLevelName = this.Space.CurrentLevel.Name;
-            Zero.Game.LevelData.PositionDifference = collisionEvent.OtherObject.Transform.Translation - this.Owner.Transform.Translation;
+            this.GameSession.LevelData.FromLevelName = this.Space.CurrentLevel.Name;
+            this.GameSession.LevelData.PositionDifference = collisionEvent.OtherObject.Transform.Translation - this.Owner.Transform.Translation;
             
             this.Space.LoadLevel(this.ToLevel);
         }

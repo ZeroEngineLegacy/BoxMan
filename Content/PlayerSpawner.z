@@ -20,7 +20,7 @@ class PlayerSpawner : ZilchComponent
         var player = Zero.ObjectStore.RestoreOrArchetype("Player", "Player", this.Space);
         Zero.ObjectStore.Erase("Player");
         
-        var fromLevel = Zero.Game.LevelData.FromLevelName;
+        var fromLevel = this.GameSession.LevelData.FromLevelName;
         if (fromLevel == "")
         {
             // Default to origin for now if no location was set
@@ -39,18 +39,18 @@ class PlayerSpawner : ZilchComponent
                     
                     if (cog.Door.FromDirection == Direction.Left)
                     {
-                        pos += local Real3(-this.DistanceOffset, Zero.Game.LevelData.PositionDifference.Y, 0.0);
+                        pos += local Real3(-this.DistanceOffset, this.GameSession.LevelData.PositionDifference.Y, 0.0);
                     }
                     else if (cog.Door.FromDirection == Direction.Right)
                     {
-                        pos += local Real3(this.DistanceOffset, Zero.Game.LevelData.PositionDifference.Y, 0.0);
+                        pos += local Real3(this.DistanceOffset, this.GameSession.LevelData.PositionDifference.Y, 0.0);
                     }
                     // TODO
                     // Make cases for vertical door entrances
                     
                     player.Transform.Translation = pos;
                     
-                    Zero.Game.LevelData.FromLevelName = "";
+                    this.GameSession.LevelData.FromLevelName = "";
                     return;
                 }
             }
