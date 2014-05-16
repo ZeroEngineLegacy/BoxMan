@@ -102,7 +102,7 @@ class SweptControllerZ : ZilchComponent
     // Sent if the character is in contact with the ground.
     sends GroundSnapCollision : SweptControllerEvent;
     // Sent when a single frame update is completed.
-    sends SweptCompleted : Event;
+    sends SweptCompleted : ZilchEvent;
 
     constructor() : base()
     {
@@ -279,7 +279,7 @@ class SweptControllerZ : ZilchComponent
 
         // This event is primarily for comunicating to an intermediary script that can
         // forward this script's events to a collision event tracker.
-        this.Owner.DispatchEvent(Events.SweptCompleted, new Event());
+        this.Owner.DispatchEvent(Events.SweptCompleted, new ZilchEvent());
     }
 
     // Each frame update, sweepVelocity starts out as the intended movement of the controller (ControllerVelocity).
@@ -566,7 +566,7 @@ class SweptControllerZ : ZilchComponent
 // The ContinuousResult structure itself should not be stored elsewhere,
 // if information is needed to be stored, it should be copied from the
 // result structure and stored as an independent variable.
-class SweptControllerEvent : Event
+class SweptControllerEvent : ZilchEvent
 {
     var Result : ContinuousResult = null;
 
