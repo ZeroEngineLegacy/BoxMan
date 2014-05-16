@@ -116,7 +116,7 @@ Level =
 		},
 		TileMap = 
 		{
-			string SourceName = "5305c3283cc3af20:Sector0101_TileMap03",
+			string SourceName = "536dc68dc129e94b:Level_TileMap00",
 			string PaletteName = "",
 			float UnitsPerTile = 1,
 			float MeshThickness = 1.2,
@@ -186,7 +186,7 @@ Level =
 		},
 		TileMap = 
 		{
-			string SourceName = "5305c3283cc69702:Sector0101_TileMap04",
+			string SourceName = "536dab74fe3714a5:Level_TileMap01",
 			string PaletteName = "",
 			float UnitsPerTile = 1,
 			float MeshThickness = 1.2,
@@ -216,7 +216,7 @@ Level =
 		},
 		TileMap = 
 		{
-			string SourceName = "5305c3283cd87dea:Sector0101_TileMap05",
+			string SourceName = "536daa5bb0e91336:Level_TileMap02",
 			string PaletteName = "",
 			float UnitsPerTile = 1,
 			float MeshThickness = 1.2,
