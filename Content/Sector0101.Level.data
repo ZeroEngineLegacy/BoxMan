@@ -51,6 +51,9 @@ Level =
 			string PlayerArchetype = "536dbf75abdc97ad:Player",
 			float DistanceOffset = 2,
 		},
+		LogicFlow = 
+		{
+		},
 	},
 	Cog = 
 	{
@@ -64,9 +67,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [4.23366, 0.488695, 21.7513],
+			Vec3 Translation = [0.411297, -0.57421, 21.7066],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.0119946, 0.0295862, 0.000355055, 0.99949],
+			Quat Rotation = [0.00799258, -0.0423929, 0.000339144, 0.999069],
 		},
 		Camera = 
 		{
@@ -83,8 +86,8 @@ Level =
 		{
 			ControlMode ControlMode = Orbit,
 			float LookDistance = 26.5746,
-			float VerticalAngle = 0.0240003,
-			float HorizontalAngle = 6.224,
+			float VerticalAngle = -0.0159997,
+			float HorizontalAngle = 6.368,
 			Vec3 LookTarget = [2.6622, -0.149042, -4.7691],
 		},
 		EditorRenderer = 
@@ -113,6 +116,7 @@ Level =
 			Vec4 Color = [0.2448, 0.36, 0.245952, 1],
 			bool Visible = true,
 			BlendMode BlendMode = Alpha,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
 		},
 		TileMap = 
 		{
@@ -138,7 +142,7 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [0, 0, 14.5],
+			Vec3 Translation = [6.53138, 0, 14.5],
 			Vec3 Scale = [1, 1, 1],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -183,6 +187,7 @@ Level =
 			Vec4 Color = [0.5, 0.02, 0.02, 1],
 			bool Visible = true,
 			BlendMode BlendMode = Alpha,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
 		},
 		TileMap = 
 		{
@@ -213,6 +218,7 @@ Level =
 			Vec4 Color = [0.0945, 0.108885, 0.3, 1],
 			bool Visible = true,
 			BlendMode BlendMode = Alpha,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
 		},
 		TileMap = 
 		{
@@ -256,6 +262,210 @@ Level =
 		{
 			string ToLevel = "536dbf66ae911f78:Sector0102",
 			int FromDirection = 0,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 8,
+		},
+		Named = 
+		{
+			string Name = "Cube",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, -2, 0],
+			Vec3 Scale = [6, 1, 1],
+			Quat Rotation = [0, 0, -0.330418, 0.943835],
+		},
+		Model = 
+		{
+			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+			bool Visible = true,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = true,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		MovingPlatform = 
+		{
+			Vec3 Movement = [0, -2, 0],
+			float MovementTime = 2,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 9,
+		},
+		Named = 
+		{
+			string Name = "Cube",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0.703955, -1.4503, 0],
+			Vec3 Scale = [6, 1, 1],
+			Quat Rotation = [0, 0, 0.707107, 0.707107],
+		},
+		Model = 
+		{
+			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+			bool Visible = true,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = true,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		MovingPlatform = 
+		{
+			Vec3 Movement = [3, 0, 0],
+			float MovementTime = 2,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 10,
+		},
+		Named = 
+		{
+			string Name = "Cube",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-2.08115, -1.4503, 0],
+			Vec3 Scale = [6, 1, 1],
+			Quat Rotation = [0, 0, 0.707107, 0.707107],
+		},
+		Model = 
+		{
+			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+			bool Visible = true,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = true,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		MovingPlatform = 
+		{
+			Vec3 Movement = [3, 0, 0],
+			float MovementTime = 2,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 11,
+		},
+		Named = 
+		{
+			string Name = "Cube",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [5.63178, -3.28572, 0],
+			Vec3 Scale = [6, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Model = 
+		{
+			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+			bool Visible = true,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = true,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		MovingPlatform = 
+		{
+			Vec3 Movement = [2, 2, 0],
+			float MovementTime = 2,
 		},
 	},
 },

@@ -49,4 +49,7 @@ LevelSettings =
 		string PlayerArchetype = "536dbf75abdc97ad:Player",
 		float DistanceOffset = 2,
 	},
+	LogicFlow = 
+	{
+	},
 },

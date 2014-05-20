@@ -23,6 +23,8 @@ class SweptControllerZ : ZilchComponent
     // Prevents any swept movement on the z-axis.
     [Property]
     var LockZAxis : Boolean = false;
+    [Property]
+    var ForwardEvents : Boolean = false;
     // Constant acceleration against WorldUp when not on ground.
     [Property]
     var Gravity : Real = 20.0;
@@ -92,6 +94,10 @@ class SweptControllerZ : ZilchComponent
     // Used to control variable jump heights.
     [Serialized]
     var Jumping : Boolean = false;
+    [Serialized]
+    var GroundTraction : Real = 1.0;
+    [Serialized]
+    var AirTraction : Real = 1.0;
 
     // Used to specify what types of physics objects are wanted
     // in the collision query.
@@ -103,6 +109,10 @@ class SweptControllerZ : ZilchComponent
     sends GroundSnapCollision : SweptControllerEvent;
     // Sent when a single frame update is completed.
     sends SweptCompleted : ZilchEvent;
+    
+    var CogArray : Array[Cog] = new Array[Cog]();
+    
+    var KinematicObjects : HashMap[Cog, Cog] = new HashMap[Cog, Cog]();
 
     constructor() : base()
     {
@@ -110,15 +120,46 @@ class SweptControllerZ : ZilchComponent
 
     function Initialize(init : CogInitializer)
     {
+        // TEMP because [Serialized] only does default values
+        this.GroundTraction = 1.0;
+        this.AirTraction = 1.0;
+        
         // Only want to resolve collision with pure static objects.
         this.CastFilter = this.Space.PhysicsSpace.CreateDefaultCastFilter();
         this.CastFilter.IgnoreDynamic = true;
         this.CastFilter.IgnoreGhost = true;
-        this.CastFilter.IgnoreKinematic = true;
+        this.CastFilter.IgnoreKinematic = false;
+        this.CastFilter.IgnoreStatic = false;
 
         // Called in init so that the values set in the property grid
         // don't have to be normalized.
         this.SetWorldUp(this.WorldUp);
+        
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    // test that this gets first frame of collision
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        Console.WriteLine("Collision");
+        var cog = event.OtherObject;
+        if (cog.RigidBody != null && cog.RigidBody.DynamicState == RigidBodyDynamicState.Kinematic)
+        {
+            this.KinematicObjects.SetOrIgnore(cog, cog);
+            var has = false;
+            foreach (var arraycog in this.CogArray)
+            {
+                if (arraycog == cog)
+                {
+                    has = true;
+                    break;
+                }
+            }
+            if (has == false)
+            {
+                this.CogArray.Add(cog);
+            }
+        }
     }
 
     // Utility function for changing WorldUp at run time and
@@ -193,6 +234,7 @@ class SweptControllerZ : ZilchComponent
     // then this should not be called.
     function Update(movement : Real3, dt : Real)
     {
+        //Console.WriteLine("Update");
         // Removes any movement given along the WorldUp axis.
         movement = movement - Math.Project(movement, this.WorldUp);
         // User not required to pass a normalized direction.
@@ -208,13 +250,13 @@ class SweptControllerZ : ZilchComponent
         var decel : Real = 0.0;
         if (this.Grounded)
         {
-            accel = this.GroundAcceleration * dt;
-            decel = this.GroundDeceleration * dt;
+            accel = this.GroundAcceleration * dt * this.GroundTraction;
+            decel = this.GroundDeceleration * dt * this.GroundTraction;
         }
         else
         {
-            accel = this.AirAcceleration * dt;
-            decel = this.AirDeceleration * dt;
+            accel = this.AirAcceleration * dt * this.AirTraction;
+            decel = this.AirDeceleration * dt * this.AirTraction;
         }
 
         // Accelerate in the direction of movement.
@@ -265,21 +307,25 @@ class SweptControllerZ : ZilchComponent
         this.ControllerVelocity = horizontalVelocity + verticalVelocity;
         
         // Makes sure jumping flag is removed when velocity is not upwards,
-        // so that the flag can be used for other behavior.
+        // so that an upward jump can be maintained while in contact with the ground.
+        // i.e. Jumping into a slope.
         if (Math.Dot(this.ControllerVelocity, this.WorldUp) <= 0.0)
         {
             this.Jumping = false;
         }
-
+        
         // Does a "collide and slide" like behavior, starting with ControllerVelocity.
-        this.SweptCollision(this.ControllerVelocity, dt);
-
+        this.SweptCollision(this.ControllerVelocity, dt, false);
+        
+        foreach (var cog in this.CogArray)
+        {
+            this.SweptCollision(cog.RigidBody.Velocity, dt, true);
+        }
+        
         // Done after the sweep to stay in contact with the ground when appropriate.
         this.SnapToGround();
-
-        // This event is primarily for comunicating to an intermediary script that can
-        // forward this script's events to a collision event tracker.
-        this.Owner.DispatchEvent(Events.SweptCompleted, new ZilchEvent());
+        
+        this.SweptCompleted();
     }
 
     // Each frame update, sweepVelocity starts out as the intended movement of the controller (ControllerVelocity).
@@ -287,8 +333,11 @@ class SweptControllerZ : ZilchComponent
     // represent the possible path of motion that is still within the initial direction of motion.
     // The ControllerVelocity is only modified when velocity in a particular direction is not
     // desired for the following frame updates.
-    function SweptCollision(sweepVelocity : Real3, timeLeft : Real)
+    function SweptCollision(sweepVelocity : Real3, timeLeft : Real, kinematic : Boolean)
     {
+        //Console.WriteLine(sweepVelocity);
+        var startTime = timeLeft;
+        
         // Used to keep track of consecutive contacted walls to detect
         // unsolvable configurations that require special handling.
         // A wall is simply anything that is neither the ground or ceiling.
@@ -311,6 +360,12 @@ class SweptControllerZ : ZilchComponent
                 sweepVelocity.Z = 0.0;
             }
 
+            //if (kinematic)
+            //{
+            //    Console.WriteLine(iterCount);
+            //    Console.WriteLine(sweepVelocity);
+            //}
+            
             // ContinuousCollider computes the time of impact for every static object encountered in
             // the collider's trajectory with the given velocity and timestep, sorted by first time of impact.
             var continuousResultRange = this.Space.PhysicsSpace.ContinuousCollider(this.Collider, sweepVelocity, timeLeft, this.CastFilter);
@@ -324,11 +379,16 @@ class SweptControllerZ : ZilchComponent
                 // Check for separating velocity.
                 // Considering near zero relative velocities will waste iterations on numerical error
                 // and lock up possible movement for the controller.
+                //Console.WriteLine(normal);
+                //Console.WriteLine(relativeVel);
                 if (relativeVel < 0.001) { continue; }
 
                 // Sending a collision for other game logic since this controller does not
                 // advance the character into contact with the detected object.
-                this.SendCollisionEvent(Events.SweptCollision, result);
+                if (kinematic == false)
+                {
+                    this.SendCollisionEvent(Events.SweptCollision, result);
+                }
 
                 // Move forward to the first time of impact.
                 // A time of 0 is valid, it just wont result in any translation.
@@ -338,6 +398,7 @@ class SweptControllerZ : ZilchComponent
                 // Determine what kind of surface was contacted.
                 var ground = this.IsGroundSurface(normal);
                 var ceiling = this.IsCeilingSurface(normal);
+                //Console.WriteLine("`ground` `ceiling`");
 
                 // Jumping upward into the ceiling.
                 if (ceiling && !this.Grounded && Math.Dot(this.ControllerVelocity, this.WorldUp) > 0.0)
@@ -349,10 +410,16 @@ class SweptControllerZ : ZilchComponent
                 // Moving into a wall or ceiling while grounded.
                 else if (!ground && this.Grounded)
                 {
+                    // Kinematic sweep can have vertical velocity, remove it
+                    if (kinematic && ceiling)
+                    {
+                        sweepVelocity -= Math.Project(sweepVelocity, this.WorldUp);
+                    }
                     // Project out the horizontal motion in the direction of the surface.
                     var horizontalNormal = normal - Math.Project(normal, this.WorldUp);
                     horizontalNormal = Math.Normalize(horizontalNormal);
                     sweepVelocity -= Math.Project(sweepVelocity, horizontalNormal);
+                    //Console.WriteLine(sweepVelocity);
                 }
                 // Falling onto the ground.
                 // If moving up a slope fast enough and then jumping, contacting the ground can cancel a jump,
@@ -376,6 +443,8 @@ class SweptControllerZ : ZilchComponent
                 // If that behavior is not desired, this block can be removed.
                 else if (ground && this.Grounded)
                 {
+                    //Console.WriteLine("Ground");
+                    var oldSweep = sweepVelocity;
                     // Project out the velocity towards the contact surface.
                     sweepVelocity -= Math.Project(sweepVelocity, normal);
                     // Get the resulting horizontal speed remaining.
@@ -390,6 +459,10 @@ class SweptControllerZ : ZilchComponent
                         // horizontal component is the same as the ControllerVelocity's
                         // without changing the direction of the sweep.
                         var controllerSpeed = Math.Length(this.ControllerVelocity);
+                        if (kinematic)
+                        {
+                            controllerSpeed = Math.Length(oldSweep);
+                        }
                         var scaleDiff = controllerSpeed / currentSpeed;
                         sweepVelocity = (horizontalSweep + verticalSweep) * scaleDiff;
                     }
@@ -402,25 +475,29 @@ class SweptControllerZ : ZilchComponent
                 }
 
                 // When contacting a wall, don't want any velocity into the wall to persist between updates.
-                if (!ground && !ceiling)
+                if (!ground && !ceiling || kinematic)
                 {
                     // Add wall normal for checking edge cases.
                     wallNormals.Push(normal);
 
-                    // The horizontal component of the resulting sweepVelocity will have been
-                    // projected out of the contacted wall surface, this can be used for
-                    // determining if the controllerVelocity should persist in that direction.
-                    // The persisting vertical component is taken from the ControllerVelocity
-                    // so that it behaves the same on the ground and in the air.
-                    var horizontalSweep = sweepVelocity - Math.Project(sweepVelocity, this.WorldUp);
-                    var verticalVelocity = Math.Project(this.ControllerVelocity, this.WorldUp);
-                    var horizontalVelocity = this.ControllerVelocity - verticalVelocity;
-                    // Don't want to take the sweep velocity if it's not in the direction of the controller,
-                    // otherwise falling down a sloped wall onto the ground will cause it to
-                    // slide backwards instead of stopping on the ground.
-                    if (Math.Dot(horizontalSweep, horizontalVelocity) > 0.0 || Math.Length(horizontalSweep) == 0.0)
+                    if (kinematic == false)
+                    //if (true)
                     {
-                        this.ControllerVelocity = horizontalSweep + verticalVelocity;
+                        // The horizontal component of the resulting sweepVelocity will have been
+                        // projected out of the contacted wall surface, this can be used for
+                        // determining if the controllerVelocity should persist in that direction.
+                        // The persisting vertical component is taken from the ControllerVelocity
+                        // so that it behaves the same on the ground and in the air.
+                        var horizontalSweep = sweepVelocity - Math.Project(sweepVelocity, this.WorldUp);
+                        var verticalVelocity = Math.Project(this.ControllerVelocity, this.WorldUp);
+                        var horizontalVelocity = this.ControllerVelocity - verticalVelocity;
+                        // Don't want to take the sweep velocity if it's not in the direction of the controller,
+                        // otherwise falling down a sloped wall onto the ground will cause it to
+                        // slide backwards instead of stopping on the ground.
+                        if (Math.Dot(horizontalSweep, horizontalVelocity) > 0.0 || Math.Length(horizontalSweep) < 0.001)
+                        {
+                            this.ControllerVelocity = horizontalSweep + verticalVelocity;
+                        }
                     }
                 }
                 else
@@ -456,7 +533,10 @@ class SweptControllerZ : ZilchComponent
                         // When the slope does not allow falling, still allow horizontal movement
                         // so the configuration can attempt to be moved out of.
                         sweepVelocity = Math.Project(sweepVelocity, slopeAxis);
-                        this.ControllerVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
+                        if (kinematic == false)
+                        {
+                            this.ControllerVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
+                        }
                     }
                     else
                     {
@@ -514,7 +594,7 @@ class SweptControllerZ : ZilchComponent
 
                 // Ignore separating velocity for the same reasons as the regular sweep.
                 if (relativeVel < 0.001) { continue; }
-
+                
                 // Skip everything that's not ground.
                 // Doesn't matter if something else is hit first because the controller
                 // shouldn't unground when on the edge of the ground and a wall slope simultaniously.
@@ -526,7 +606,10 @@ class SweptControllerZ : ZilchComponent
                 this.SendCollisionEvent(Events.GroundSnapCollision, result);
 
                 // Move character to the ground surface.
-                this.Transform.Translation += maxDisplacement * result.Time;
+                //if (result.OtherObject.RigidBody == null || result.OtherObject.RigidBody.DynamicState != RigidBodyDynamicState.Kinematic)
+                //{
+                    this.Transform.Translation += maxDisplacement * result.Time;
+                //}
                 // Reset flag since ground was detected.
                 this.Grounded = true;
                 // First detection with a ground surface is all that's needed.
@@ -558,7 +641,25 @@ class SweptControllerZ : ZilchComponent
     // Just a wrapper for DispatchEvent.
     function SendCollisionEvent(eventName : String, result : ContinuousResult)
     {
+        if (this.ForwardEvents && this.Owner.CustomCollisionEventTracker != null)
+        {
+            this.Owner.CustomCollisionEventTracker.AddCollision(result.OtherCollider, result.WorldPoint, result.WorldNormalTowardsOther);
+        }
+        
         this.Owner.DispatchEvent(eventName, new SweptControllerEvent(result));
+    }
+    
+    function SweptCompleted()
+    {
+        this.CogArray.Clear();
+        this.KinematicObjects.Clear();
+        
+        if (this.ForwardEvents && this.Owner.CustomCollisionEventTracker != null)
+        {
+            this.Owner.CustomCollisionEventTracker.SendEvents("Collision");
+        }
+        
+        this.Owner.DispatchEvent(Events.SweptCompleted, new ZilchEvent());
     }
 }
 

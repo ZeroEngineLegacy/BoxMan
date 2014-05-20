@@ -14,7 +14,7 @@ Cog =
 	},
 	Transform = 
 	{
-		Vec3 Translation = [1.74338, 0.950232, 4.04734],
+		Vec3 Translation = [0, 0, 0],
 		Vec3 Scale = [1, 1, 1],
 		Quat Rotation = [0, 0, 0, 1],
 	},
@@ -44,8 +44,10 @@ Cog =
 	{
 		Vec3 WorldUp = [0, 1, 0],
 		bool LockZAxis = true,
+		bool ForwardEvents = true,
 		float Gravity = 30,
 		float JumpSpeed = 18,
+		float JumpCancelFactor = 0.8,
 		float MaxMoveSpeed = 10,
 		float MaxFallSpeed = 50,
 		float GroundAcceleration = 50,
@@ -53,11 +55,13 @@ Cog =
 		float GroundDeceleration = 50,
 		float AirDeceleration = 10,
 		float MaxGroundSlope = 46,
-		float MaxCeilingSlope = 23,
+		float MaxCeilingSlope = 46,
 		float GroundSnapDistance = 0.5,
 		Vec3 ControllerVelocity = [0, 0, 0],
 		bool Grounded = false,
 		bool Jumping = false,
+		float GroundTraction = 0,
+		float AirTraction = 0,
 	},
 	CharacterInputZ = 
 	{
@@ -73,11 +77,9 @@ Cog =
 		string JumpDown = "537b7c4f9b3da794:BoxManJumpDown",
 		string Flip = "537b79580995a16d:BoxManFlip",
 		bool Flipping = false,
+		bool Walking = false,
 	},
 	CustomCollisionEventTracker = 
-	{
-	},
-	ForwardSweptControllerEvents = 
 	{
 	},
 	Hierarchy = 
