@@ -7,5 +7,6 @@ BinaryContent =
 		string LoaderType = "TileMapSource",
 		uint Version = 0,
 		string FilterTag = "",
+		string ResourceOwner = "53740c6c967d5632:Sector0103",
 	},
 },

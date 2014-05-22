@@ -78,6 +78,7 @@ Cog =
 		string Flip = "537b79580995a16d:BoxManFlip",
 		bool Flipping = false,
 		bool Walking = false,
+		bool FlipX = false,
 	},
 	CustomCollisionEventTracker = 
 	{

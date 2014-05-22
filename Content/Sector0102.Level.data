@@ -51,6 +51,9 @@ Level =
 			string PlayerArchetype = "536dbf75abdc97ad:Player",
 			float DistanceOffset = 2,
 		},
+		LogicFlow = 
+		{
+		},
 	},
 	Cog = 
 	{
@@ -153,11 +156,14 @@ Level =
 			Vec4 Color = [0.243137, 0.360784, 0.247059, 1],
 			bool Visible = true,
 			BlendMode BlendMode = Alpha,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
 		},
 		TileMap = 
 		{
 			string SourceName = "536dbf9e5b4ef32c:Sector0102_TileMap00",
+			string PaletteName = "",
 			float UnitsPerTile = 1,
+			float MeshThickness = 1.2,
 		},
 	},
 	Cog = 
