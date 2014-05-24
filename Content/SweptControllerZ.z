@@ -19,7 +19,7 @@ class SweptControllerZ : ZilchComponent
     // Used to decompose movement into horizontal and vertical pieces.
     // Used to determine what surfaces are walkable.
     [Property]
-    var WorldUp : Real3 = local Real3(0.0, 1.0, 0.0);
+    var WorldUp : Real3 = Real3(0.0, 1.0, 0.0);
     // Prevents any swept movement on the z-axis.
     [Property]
     var LockZAxis : Boolean = false;
@@ -84,7 +84,7 @@ class SweptControllerZ : ZilchComponent
     // Does not reflect the RigidBody's actual velocity.
     // Should not be accessed/modified outside of this script.
     [Serialized]
-    var ControllerVelocity : Real3 = local Real3(0.0, 0.0, 0.0);
+    var ControllerVelocity : Real3 = Real3();
     // Controller state for being on a ground surface.
     // Determines movement acceleration types,
     // whether gravity is applied, and if jumping is possible.
@@ -94,6 +94,8 @@ class SweptControllerZ : ZilchComponent
     // Used to control variable jump heights.
     [Serialized]
     var Jumping : Boolean = false;
+    // Scalars for changing the amount of acceleration/deceleration
+    // at run time without losing the base values set in the properties.
     [Serialized]
     var GroundTraction : Real = 1.0;
     [Serialized]
@@ -110,10 +112,14 @@ class SweptControllerZ : ZilchComponent
     // Sent when a single frame update is completed.
     sends SweptCompleted : ZilchEvent;
     
-    var CogArray : Array[Cog] = new Array[Cog]();
+    // List of kinematic objects that the character came into contact with.
+    // Used to run sweep with the velocities of kinematic objects so that
+    // the character can be moved by them.
+    var KinematicContacts : Array[Cog] = new Array[Cog]();
+    // List of kinematic objects detected during the controller's update.
+    // Copied to KinematicContacts at the end of the update.
+    var KinematicPending : Array[Cog] = new Array[Cog]();
     
-    var KinematicObjects : HashMap[Cog, Cog] = new HashMap[Cog, Cog]();
-
     constructor() : base()
     {
     }
@@ -135,30 +141,11 @@ class SweptControllerZ : ZilchComponent
         // don't have to be normalized.
         this.SetWorldUp(this.WorldUp);
         
-        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
-    }
-
-    // test that this gets first frame of collision
-    function OnCollisionPersisted(event : CollisionEvent)
-    {
-        var cog = event.OtherObject;
-        if (cog.RigidBody != null && cog.RigidBody.DynamicState == RigidBodyDynamicState.Kinematic)
-        {
-            this.KinematicObjects.SetOrIgnore(cog, cog);
-            var has = false;
-            foreach (var arraycog in this.CogArray)
-            {
-                if (arraycog == cog)
-                {
-                    has = true;
-                    break;
-                }
-            }
-            if (has == false)
-            {
-                this.CogArray.Add(cog);
-            }
-        }
+        // Needed in to catch kinematic contacts detected by physics engine.
+        // i.e. A platform moving into the character rather than the
+        // character moving into a platform.
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollision);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollision);
     }
 
     // Utility function for changing WorldUp at run time and
@@ -233,7 +220,6 @@ class SweptControllerZ : ZilchComponent
     // then this should not be called.
     function Update(movement : Real3, dt : Real)
     {
-        //Console.WriteLine("Update");
         // Removes any movement given along the WorldUp axis.
         movement = movement - Math.Project(movement, this.WorldUp);
         // User not required to pass a normalized direction.
@@ -244,22 +230,29 @@ class SweptControllerZ : ZilchComponent
         var verticalVelocity = Math.Project(this.ControllerVelocity, this.WorldUp);
         var horizontalVelocity = this.ControllerVelocity - verticalVelocity;
 
-        // Get acceleration types.
-        var accel : Real = 0.0;
-        var decel : Real = 0.0;
+        // Get acceleration/deceleration types.
+        var acceleration = dt;
+        var deceleration = dt;
         if (this.Grounded)
         {
-            accel = this.GroundAcceleration * dt * this.GroundTraction;
-            decel = this.GroundDeceleration * dt * this.GroundTraction;
+            acceleration *= this.GroundAcceleration * this.GroundTraction;
+            deceleration *= this.GroundDeceleration * this.GroundTraction;
         }
         else
         {
-            accel = this.AirAcceleration * dt * this.AirTraction;
-            decel = this.AirDeceleration * dt * this.AirTraction;
+            acceleration *= this.AirAcceleration * this.AirTraction;
+            deceleration *= this.AirDeceleration * this.AirTraction;
         }
+        
+        this.GroundTraction = 1.0;
+        this.AirTraction = 1.0;
 
         // Accelerate in the direction of movement.
-        horizontalVelocity += movement * accel;
+        if (Math.Length(horizontalVelocity) < this.MaxMoveSpeed)
+        {
+            var cappedAccel = Math.Min(this.MaxMoveSpeed - Math.Length(horizontalVelocity), acceleration);
+            horizontalVelocity += movement * acceleration;
+        }
         
         // Get velocity directions relative to input movement.
         // sideVelocity will be all of horizontalVelocity when movement is zero,
@@ -269,25 +262,30 @@ class SweptControllerZ : ZilchComponent
         
         // Decelerate velocity that is not in the direction of movement.
         // Deceleration amount can only take velocity to zero, not backwards.
-        var cappedDecel = Math.Min(Math.Length(sideVelocity), decel);
+        var cappedDecel = Math.Min(Math.Length(sideVelocity), deceleration);
         horizontalVelocity -= Math.Normalize(sideVelocity) * cappedDecel;
         
         // If movement is against current velocity, apply deceleration to assist movement.
         if (Math.Dot(forwardVelocity, movement) < 0.0)
         {
-            cappedDecel = Math.Min(Math.Length(forwardVelocity), decel);
+            cappedDecel = Math.Min(Math.Length(forwardVelocity), deceleration);
+            horizontalVelocity -= Math.Normalize(forwardVelocity) * cappedDecel;
+        }
+        else if (Math.Length(forwardVelocity) > this.MaxMoveSpeed)
+        {
+            cappedDecel = Math.Min(Math.Length(forwardVelocity) - this.MaxMoveSpeed, deceleration);
             horizontalVelocity -= Math.Normalize(forwardVelocity) * cappedDecel;
         }
 
         // Cap resulting velocity at max speed.
-        var cappedSpeed = Math.Min(Math.Length(horizontalVelocity), this.MaxMoveSpeed);
-        horizontalVelocity = Math.Normalize(horizontalVelocity) * cappedSpeed;
+        //var cappedMoveSpeed = Math.Min(Math.Length(horizontalVelocity), this.MaxMoveSpeed);
+        //horizontalVelocity = Math.Normalize(horizontalVelocity) * cappedMoveSpeed;
 
         if (this.Grounded)
         {
             // Do not want to accumulate vertical velocity when grounded.
             // Gravity is effectively turned off while grounded.
-            verticalVelocity = local Real3(0.0, 0.0, 0.0);
+            verticalVelocity = Real3();
         }
         else
         {
@@ -297,8 +295,8 @@ class SweptControllerZ : ZilchComponent
             // Condition can be removed to cap both directions, or removed entirely for no vertical speed cap.
             if (Math.Dot(verticalVelocity, this.WorldUp) < 0.0)
             {
-                cappedSpeed = Math.Min(Math.Length(verticalVelocity), this.MaxFallSpeed);
-                verticalVelocity = Math.Normalize(verticalVelocity) * cappedSpeed;
+                var cappedFallSpeed = Math.Min(Math.Length(verticalVelocity), this.MaxFallSpeed);
+                verticalVelocity = Math.Normalize(verticalVelocity) * cappedFallSpeed;
             }
         }
 
@@ -318,7 +316,7 @@ class SweptControllerZ : ZilchComponent
         
         // Does a sweep for every kinematic object the character is in contact with
         // using the velocity of that object. (for moving platforms and such)
-        foreach (var cog in this.CogArray)
+        foreach (var cog in this.KinematicContacts)
         {
             this.SweptCollision(cog.RigidBody.Velocity, dt, true);
         }
@@ -326,6 +324,7 @@ class SweptControllerZ : ZilchComponent
         // Done after the sweep to stay in contact with the ground when appropriate.
         this.SnapToGround();
         
+        // Event and data management for the end of the update.
         this.SweptCompleted();
     }
 
@@ -336,12 +335,11 @@ class SweptControllerZ : ZilchComponent
     // desired for the following frame updates.
     function SweptCollision(sweepVelocity : Real3, timeLeft : Real, kinematic : Boolean)
     {
-        var startTime = timeLeft;
-        
-        // Used to keep track of consecutive contacted walls to detect
-        // unsolvable configurations that require special handling.
-        // A wall is simply anything that is neither the ground or ceiling.
+        // Used to keep track of consecutive contacted surface normals
+        // to detect unsolvable configurations that require special handling.
         var normals = new Array[Real3]();
+        // Sentinal vector 
+        normals.Add(Real3());
 
         // The number of iterations used is arbitrary.
         // Some geometrical configurations can take as much as 10-20 iterations to resolve.
@@ -389,28 +387,25 @@ class SweptControllerZ : ZilchComponent
                 var ceiling = this.IsCeilingSurface(normal);
 
                 // Jumping upward into the ceiling.
-                if (ceiling && !this.Grounded && Math.Dot(this.ControllerVelocity, this.WorldUp) > 0.0)
+                if (ceiling && !this.Grounded)
                 {
                     // Remove vertical velocity for sweep AND controller.
                     sweepVelocity -= Math.Project(sweepVelocity, this.WorldUp);
-                    this.ControllerVelocity -= Math.Project(this.ControllerVelocity, this.WorldUp);
+                    if (!kinematic && Math.Dot(this.ControllerVelocity, this.WorldUp) > 0.0)
+                    {
+                        this.ControllerVelocity -= Math.Project(this.ControllerVelocity, this.WorldUp);
+                    }
                 }
                 // Moving into a wall or ceiling while grounded.
-                else if (!ground && this.Grounded)
+                // TODO this breaks agains ceiling
+                else if (!ground && !ceiling && this.Grounded)
                 {
                     // Kinematic sweep can have vertical velocity
                     var verticalSweep = Math.Project(sweepVelocity, this.WorldUp);
                     sweepVelocity -= verticalSweep;
-
-                    var initialSpeed = Math.Length(Math.Project(verticalSweep, this.WorldUp));
-                    verticalSweep -= Math.Project(verticalSweep, normal);
-                    var currentSpeed = Math.Length(Math.Project(verticalSweep, this.WorldUp));
-                    if (currentSpeed != 0.0)
-                    {
-                        var scaleCorrection = initialSpeed / currentSpeed;
-                        verticalSweep *= scaleCorrection;
-                    }
-
+                    
+                    verticalSweep = this.SkewedProjection(verticalSweep, normal, Skew.Vertical);
+                    
                     // Project out the horizontal motion in the direction of the surface.
                     var horizontalNormal = normal - Math.Project(normal, this.WorldUp);
                     horizontalNormal = Math.Normalize(horizontalNormal);
@@ -420,7 +415,7 @@ class SweptControllerZ : ZilchComponent
                 // Falling onto the ground.
                 // If moving up a slope fast enough and then jumping, contacting the ground can cancel a jump,
                 // the check for jumping is to prevent that and can be removed if desired.
-                else if (ground && !this.Grounded && !this.Jumping)
+                else if (!kinematic && ground && !this.Grounded && !this.Jumping)
                 {
                     // Remove vertical velocity only on first impact with ground,
                     // the controller does not have vertical velocity when grounded.
@@ -440,22 +435,7 @@ class SweptControllerZ : ZilchComponent
                 // Also needed for kinematic sweep
                 else if (ground && this.Grounded)
                 {
-                    // Get the speed of the character in the horizontal direction before projection.
-                    var initialSpeed = Math.Length(sweepVelocity - Math.Project(sweepVelocity, this.WorldUp));
-                    // Project out the velocity towards the contact surface.
-                    sweepVelocity -= Math.Project(sweepVelocity, normal);
-                    // Get the resulting horizontal speed after projection.
-                    var currentSpeed = Math.Length(sweepVelocity - Math.Project(sweepVelocity, this.WorldUp));
-                    // If the resulting speed is zero, then the character can't move in that direction
-                    // nothing else needs to be done.
-                    if (currentSpeed != 0.0)
-                    {
-                        // Scaling the sweepVelocity so that the length of the
-                        // horizontal component is the same before and after the projection
-                        // without changing the direction of the sweep.
-                        var scaleCorrection = initialSpeed / currentSpeed;
-                        sweepVelocity *= scaleCorrection;
-                    }
+                    sweepVelocity = this.SkewedProjection(sweepVelocity, normal, Skew.Horizontal);
                 }
                 // All non specific behavior cases.
                 else
@@ -464,11 +444,8 @@ class SweptControllerZ : ZilchComponent
                     sweepVelocity -= Math.Project(sweepVelocity, normal);
                 }
 
-                // Add wall normal for checking edge cases.
-                normals.Push(normal);
-
                 // When contacting a wall, don't want any velocity into the wall to persist between updates.
-                if (!ground && !ceiling && !kinematic)
+                if (!kinematic && !ground && !ceiling)
                 {
                     // The horizontal component of the resulting sweepVelocity will have been
                     // projected out of the contacted wall surface, this can be used for
@@ -487,14 +464,9 @@ class SweptControllerZ : ZilchComponent
                     }
                 }
 
-                // Only resolve the first non-separating contact.
-                collision = true;
-                break;
-            }
+                // Add wall normal for checking edge cases.
+                normals.Push(normal);
 
-            // Swept from one wall into another.
-            if (normals.Count >= 2)
-            {
                 var normal1 = normals.Get(normals.LastIndex - 1);
                 var normal2 = normals.Get(normals.LastIndex);
                 
@@ -502,42 +474,58 @@ class SweptControllerZ : ZilchComponent
                 // If angle is acute (less than 90 degrees), then sweep will project back and forth
                 // between walls forever without any progress.
                 // Problem must be solved on the axis created by both walls.
-                if (Math.Dot(normal1, normal2) < 0.0)
+                if (Math.Dot(normal1, normal2) < -0.001)
                 {
+                    // TODO reword 'direction'
                     // Get axis of plane intersection, direction does not matter since
                     // it is only used to be projected onto.
                     // Must be normalized to maintain correct velocity magnitudes.
                     var slopeAxis = Math.Cross(normal1, normal2);
                     slopeAxis = Math.Normalize(slopeAxis);
                     
-                    if (kinematic)
+                    if (kinematic || this.Grounded)
                     {
                         sweepVelocity = Math.Project(sweepVelocity, slopeAxis);
                     }
+                    // Check if perpendicular to world up.
+                    else if (Math.Abs(Math.Dot(slopeAxis, this.WorldUp)) < 0.001)
+                    {
+                        // Only use projected horizontal velocity.
+                        // When the slope does not allow falling, still allow horizontal movement
+                        // so the configuration can attempt to be moved out of.
+                        sweepVelocity = Math.Project(sweepVelocity, slopeAxis);
+                        this.ControllerVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
+                    }
                     else
                     {
-                        // Check if perpendicular to world up.
-                        if (Math.Dot(slopeAxis, this.WorldUp) == 0.0)
+                        if (Math.Dot(slopeAxis, this.WorldUp) > 0.0)
                         {
-                            // Only use projected horizontal velocity.
-                            // When the slope does not allow falling, still allow horizontal movement
-                            // so the configuration can attempt to be moved out of.
-                            sweepVelocity = Math.Project(sweepVelocity, slopeAxis);
-                            this.ControllerVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
+                            slopeAxis *= -1.0;
                         }
-                        else
+                        
+                        if (Math.Dot(this.ControllerVelocity, slopeAxis) < 0.0 && Math.Dot(this.ControllerVelocity, this.WorldUp) < 0.0)
                         {
-                            // Only use projected vertical velocity.
-                            // Only vertical velocity should persist on ControllerVelocity to allow falling.
-                            this.ControllerVelocity = Math.Project(this.ControllerVelocity, this.WorldUp);
-                            // Sweep should continue along the slope but move at the
-                            // speed of the velocity due to gravity.
-                            sweepVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
-                            sweepVelocity = Math.Normalize(sweepVelocity);
-                            sweepVelocity *= Math.Length(this.ControllerVelocity);
+                            this.ControllerVelocity = Math.Project(sweepVelocity, slopeAxis);
                         }
+                        
+                        this.ControllerVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
+                        sweepVelocity = this.ControllerVelocity;
+                        this.AirTraction = 0.0;
+                        
+                        // Only use projected vertical velocity.
+                        // Only vertical velocity should persist on ControllerVelocity to allow falling.
+                        //this.ControllerVelocity = Math.Project(this.ControllerVelocity, this.WorldUp);
+                        // Sweep should continue along the slope but move at the
+                        // speed of the velocity due to gravity.
+                        //sweepVelocity = Math.Project(this.ControllerVelocity, slopeAxis);
+                        //sweepVelocity = Math.Normalize(sweepVelocity);
+                        //sweepVelocity *= Math.Length(this.ControllerVelocity);
                     }
                 }
+                
+                // Only resolve the first non-separating contact.
+                collision = true;
+                break;
             }
 
             // If no intersections to resolve from the sweep.
@@ -584,11 +572,8 @@ class SweptControllerZ : ZilchComponent
                 // choose to do something only when in contact with the ground.
                 this.SendCollisionEvent(Events.GroundSnapCollision, result);
 
-                // Move character to the ground surface.
-                //if (result.OtherObject.RigidBody == null || result.OtherObject.RigidBody.DynamicState != RigidBodyDynamicState.Kinematic)
-                //{
-                    this.Transform.Translation += maxDisplacement * result.Time;
-                //}
+                this.Transform.Translation += maxDisplacement * result.Time;
+
                 // Reset flag since ground was detected.
                 this.Grounded = true;
                 // First detection with a ground surface is all that's needed.
@@ -617,7 +602,38 @@ class SweptControllerZ : ZilchComponent
         return Math.ToDegrees(angle) <= this.MaxCeilingSlope;
     }
     
-    // Just a wrapper for DispatchEvent.
+    function SkewedProjection(velocity : Real3, normal : Real3, skew : Skew) : Real3
+    {
+        var initialLength = 0.0;
+        var currentLength = 0.0;
+        
+        if (skew == Skew.Horizontal)
+        {
+            // Compute horizontal length before and after projection
+            initialLength = Math.Length(velocity - Math.Project(velocity, this.WorldUp));
+            velocity -= Math.Project(velocity, normal);
+            currentLength = Math.Length(velocity - Math.Project(velocity, this.WorldUp));
+        }
+        else if (skew == Skew.Vertical)
+        {
+            // Compute vertical length before and after projection
+            initialLength = Math.Length(Math.Project(velocity, this.WorldUp));
+            velocity -= Math.Project(velocity, normal);
+            currentLength = Math.Length(Math.Project(velocity, this.WorldUp));
+        }
+        
+        if (currentLength != 0.0)
+        {
+            // Scaling the velocity so that the verticle/horizontal length
+            // is the same before and after the projection
+            // without changing the direction of the velocity.
+            var scaleCorrection = initialLength / currentLength;
+            velocity *= scaleCorrection;
+        }
+        
+        return velocity;
+    }
+    
     function SendCollisionEvent(eventName : String, result : ContinuousResult)
     {
         if (this.ForwardEvents && this.Owner.CustomCollisionEventTracker != null)
@@ -626,19 +642,52 @@ class SweptControllerZ : ZilchComponent
         }
         
         this.Owner.DispatchEvent(eventName, new SweptControllerEvent(result));
+        
+        this.AddIfKinematic(result.OtherObject);
     }
     
     function SweptCompleted()
     {
-        this.CogArray.Clear();
-        this.KinematicObjects.Clear();
-        
         if (this.ForwardEvents && this.Owner.CustomCollisionEventTracker != null)
         {
             this.Owner.CustomCollisionEventTracker.SendEvents("Collision");
         }
         
         this.Owner.DispatchEvent(Events.SweptCompleted, new ZilchEvent());
+        
+        this.UpdateKinematicList();
+    }
+    
+    // Forwards object to kinematic check.
+    function OnCollision(event : CollisionEvent)
+    {
+        this.AddIfKinematic(event.OtherObject);
+    }
+
+    function AddIfKinematic(cog : Cog)
+    {
+        if (cog.RigidBody != null && cog.RigidBody.DynamicState == RigidBodyDynamicState.Kinematic)
+        {
+            var has = false;
+            foreach (var arraycog in this.KinematicPending)
+            {
+                if (arraycog == cog)
+                {
+                    has = true;
+                    break;
+                }
+            }
+            if (has == false)
+            {
+                this.KinematicPending.Add(cog);
+            }
+        }
+    }
+    
+    function UpdateKinematicList()
+    {
+        this.KinematicContacts = this.KinematicPending.Copy();
+        this.KinematicPending.Clear();
     }
 }
 
@@ -658,4 +707,10 @@ class SweptControllerEvent : ZilchEvent
     {
         this.Result = result;
     }
+}
+
+enum Skew
+{
+    Horizontal,
+    Vertical,
 }
