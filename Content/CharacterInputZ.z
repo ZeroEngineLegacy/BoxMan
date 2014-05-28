@@ -1,7 +1,7 @@
 class CharacterInputZ : ZilchComponent
 {
     [Dependency]
-    var Controller : SweptControllerZ = null;
+    var Controller : SweptController = null;
     
     [Property]
     var Projectile : Archetype = null;
@@ -39,20 +39,20 @@ class CharacterInputZ : ZilchComponent
             this.Owner.AnimationController.Walking = true;
         }
         
-        if (this.Owner.SweptControllerZ.Grounded)
+        if (this.Owner.SweptController.Grounded)
         {
             if (Zero.Keyboard.KeyIsDown(Keys.Shift))
             {
-                this.Owner.SweptControllerZ.MaxMoveSpeed = 20.0;
+                this.Owner.SweptController.MaxMoveSpeed = 20.0;
             }
             else
             {
-                this.Owner.SweptControllerZ.MaxMoveSpeed = 10.0;
+                this.Owner.SweptController.MaxMoveSpeed = 10.0;
             }
         }
-        else if (Math.Abs(this.Owner.SweptControllerZ.ControllerVelocity.X) <= 10.0)
+        else if (Math.Abs(this.Owner.SweptController.ControllerVelocity.X) <= 10.0)
         {
-            this.Owner.SweptControllerZ.MaxMoveSpeed = 10.0;
+            this.Owner.SweptController.MaxMoveSpeed = 10.0;
         }
         
         // Shoots a cube, not that important

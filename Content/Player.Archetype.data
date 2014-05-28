@@ -40,29 +40,6 @@ Cog =
 		Vec3 Offset = [0, 0, 0],
 		Vec3 Size = [0.3, 1.3, 0.5],
 	},
-	SweptControllerZ = 
-	{
-		Vec3 WorldUp = [0, 1, 0],
-		bool LockZAxis = true,
-		bool ForwardEvents = true,
-		float Gravity = 30,
-		float JumpSpeed = 18,
-		float JumpCancelFactor = 0.8,
-		float MaxMoveSpeed = 10,
-		float MaxFallSpeed = 50,
-		float GroundAcceleration = 50,
-		float AirAcceleration = 10,
-		float GroundDeceleration = 50,
-		float AirDeceleration = 10,
-		float MaxGroundSlope = 46,
-		float MaxCeilingSlope = 46,
-		float GroundSnapDistance = 0.5,
-		Vec3 ControllerVelocity = [0, 0, 0],
-		bool Grounded = false,
-		bool Jumping = false,
-		float GroundTraction = 0,
-		float AirTraction = 0,
-	},
 	CharacterInputZ = 
 	{
 		string Projectile = "4de020863e85dcdf:Cube",
@@ -82,6 +59,29 @@ Cog =
 	},
 	CustomCollisionEventTracker = 
 	{
+	},
+	SweptController = 
+	{
+		Vec3 WorldUp = [0, 1, 0],
+		bool LockZAxis = true,
+		bool ForwardEvents = true,
+		float Gravity = 30,
+		float JumpSpeed = 18,
+		float JumpCancelFactor = 0.8,
+		float MaxMoveSpeed = 10,
+		float MaxFallSpeed = 50,
+		float GroundAcceleration = 50,
+		float AirAcceleration = 10,
+		float GroundDeceleration = 50,
+		float AirDeceleration = 10,
+		float MaxGroundSlope = 45,
+		float MaxCeilingSlope = 45,
+		float GroundSnapDistance = 0.5,
+		Vec3 ControllerVelocity = [0, 0, 0],
+		bool Grounded = false,
+		bool Jumping = false,
+		float GroundTraction = 0,
+		float AirTraction = 0,
 	},
 	Hierarchy = 
 	{

@@ -42,8 +42,8 @@ class AnimationController : ZilchComponent
             return;
         }
         
-        var grounded = this.Owner.SweptControllerZ.Grounded;
-        var velocity = this.Owner.SweptControllerZ.ControllerVelocity;
+        var grounded = this.Owner.SweptController.Grounded;
+        var velocity = this.Owner.SweptController.ControllerVelocity;
         
         var sprite = cog.Sprite;
         

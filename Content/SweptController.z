@@ -11,7 +11,7 @@
 
 // Character controller is independent of physics update.
 // The RigidBody is expected to be Kinematic when using this controller.
-class SweptControllerZ : ZilchComponent
+class SweptController : ZilchComponent
 {
     [Dependency]
     var Transform : Transform = null;
