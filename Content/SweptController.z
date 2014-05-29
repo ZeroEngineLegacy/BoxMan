@@ -132,7 +132,10 @@ class SweptController : ZilchComponent
     
     function Initialize(init : CogInitializer)
     {
-        // TEMP because [Serialized] only does default values
+        // In case the user is much too busy to be bothered with such details.
+        this.RigidBody.DynamicState = RigidBodyDynamicState.Kinematic;
+        
+        // Temporary because [Serialized] only does default values.
         this.GroundTraction = 1.0;
         this.AirTraction = 1.0;
         
