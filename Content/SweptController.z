@@ -35,15 +35,15 @@ class SweptController : ZilchComponent
     var ForwardEvents : Boolean = false;
     // Constant acceleration against WorldUp when not on ground.
     [Property]
-    var Gravity : Real = 20.0;
+    var Gravity : Real = 10.0;
     // Instantanious velocity in the WorldUp direction when jump is activated.
     [Property]
-    var JumpSpeed : Real = 10.0;
+    var JumpSpeed : Real = 5.0;
     // The percentage of upward velocity that should be removed
     // when a jump is cancelled.
     // Value expected to be between 0 to 1.
     [Property]
-    var JumpCancelFactor : Real = 0.8;
+    var JumpCancelFactor : Real = 0.5;
     // Maximum speed you can accelerate to in the horizontal direction.
     [Property]
     var MaxMoveSpeed : Real = 10.0;
@@ -52,17 +52,17 @@ class SweptController : ZilchComponent
     var MaxFallSpeed : Real = 50.0;
     // Increase in movement velocity per second on ground or in air.
     [Property]
-    var GroundAcceleration : Real = 30.0;
+    var GroundAcceleration : Real = 50.0;
     [Property]
-    var AirAcceleration : Real = 15.0;
+    var AirAcceleration : Real = 10.0;
     // Decrease in movement velocity per second on ground or in air.
     // Not applied against direction of input.
     // Prevents side-slipping when changing directions.
     // Adds to acceleration when moving against current velocity.
     [Property]
-    var GroundDeceleration : Real = 30.0;
+    var GroundDeceleration : Real = 50.0;
     [Property]
-    var AirDeceleration : Real = 15.0;
+    var AirDeceleration : Real = 10.0;
     // Maximum angle, in degrees, that a surface can be to be considered ground
     // based upon the WorldUp vector.
     // Ground can be walked on and jumped off of.
@@ -117,11 +117,11 @@ class SweptController : ZilchComponent
     var CastFilter : CastFilter = null;
     // List of kinematic objects detected during the controller's update.
     // Copied to KinematicContacts at the end of the update.
-    var KinematicPending : Array[Cog] = new Array[Cog]();
+    var KinematicPending : Array[Cog] = Array[Cog]();
     // List of kinematic objects that the character came into contact with.
     // Used to run sweep with the velocities of kinematic objects so that
     // the character can be moved by them.
-    var KinematicContacts : Array[Cog] = new Array[Cog]();
+    var KinematicContacts : Array[Cog] = Array[Cog]();
     
     // Sent for every object that the main sweep resolves against.
     sends SweptCollision : SweptControllerEvent;
@@ -348,7 +348,7 @@ class SweptController : ZilchComponent
     {
         // Used to keep track of consecutive contacted surface normals
         // to detect unsolvable configurations that require special handling.
-        var normals = new Array[Real3]();
+        var normals = Array[Real3]();
         // Sentinel value, serves no purpose other than removing a conditional statement.
         normals.Add(Real3());
         
@@ -626,7 +626,7 @@ class SweptController : ZilchComponent
             this.Owner.CustomCollisionEventTracker.AddCollision(result.OtherCollider, result.WorldPoint, result.WorldNormalTowardsOther);
         }
         
-        this.Owner.DispatchEvent(eventName, new SweptControllerEvent(result));
+        this.Owner.DispatchEvent(eventName, SweptControllerEvent(result));
         
         this.AddIfKinematic(result.OtherObject);
     }
@@ -641,7 +641,7 @@ class SweptController : ZilchComponent
             this.Owner.CustomCollisionEventTracker.SendEvents("Collision");
         }
         
-        this.Owner.DispatchEvent(Events.SweptCompleted, new ZilchEvent());
+        this.Owner.DispatchEvent(Events.SweptCompleted, ZilchEvent());
         
         this.UpdateKinematicList();
     }
