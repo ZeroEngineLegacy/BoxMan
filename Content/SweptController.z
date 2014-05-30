@@ -174,7 +174,7 @@ class SweptController : ZilchComponent
     
     // Will only cause the character to jump when grounded.
     // User does not need to check for grounded or anything else before calling.
-    function GroundJump()
+    function Jump()
     {
         if (this.Grounded)
         {
@@ -189,7 +189,7 @@ class SweptController : ZilchComponent
     // Will cause the character to jump unconditionally.
     // Ideal for jumping while in the air.
     // It is up to the user to determine when this should be called.
-    function ForcedJump()
+    function JumpUnconditionally()
     {
         // Remove any velocity that's currently on the WorldUp axis first
         // and then add jump velocity.
@@ -204,7 +204,7 @@ class SweptController : ZilchComponent
     // the additional velocity passed in.
     // Ideal for jumping off a wall with some horizontal velocity.
     // It is up to the user to determine when this should be called.
-    function DirectionalJump(additionalVelocity : Real3)
+    function JumpDirectionally(additionalVelocity : Real3)
     {
         this.ControllerVelocity = additionalVelocity + this.WorldUp * this.JumpSpeed;
         this.Grounded = false;
@@ -215,7 +215,7 @@ class SweptController : ZilchComponent
     // does not have to be called otherwise.
     // Can be called whenever a jump button is not being pressed
     // or when the jump action should be cancelled for any reason.
-    function JumpEnd()
+    function JumpCancel()
     {
         // If a jump is cancelled while still moving upward,
         // this will reduce the remaining velocity to make a shorter jump.
