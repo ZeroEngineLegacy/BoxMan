@@ -76,11 +76,11 @@ class CharacterInputZ : ZilchComponent
         
         if (Zero.Keyboard.KeyIsPressed(Keys.Up))
         {
-            this.Controller.GroundJump();
+            this.Controller.Jump();
         }
         if (!Zero.Keyboard.KeyIsDown(Keys.Space) && !Zero.Keyboard.KeyIsDown(Keys.Up))
         {
-            this.Controller.JumpEnd();
+            this.Controller.JumpCancel();
         }
         
         //Console.WriteLine("Controller update");
