@@ -19,4 +19,13 @@ GameSession =
 	LevelData = 
 	{
 	},
+	CameraViewports = 
+	{
+	},
+	ZilchState = 
+	{
+	},
+	UnitTests = 
+	{
+	},
 },
