@@ -1,6 +1,6 @@
 Level = 
 {
-	LevelSettings = 
+	Cog = 
 	{
 		LinkId = 
 		{
@@ -45,6 +45,11 @@ Level =
 		ForwardRenderer = 
 		{
 			Vec4 ClearColor = [0.105, 0.09975, 0.09975, 1],
+			bool DrawNonVisible = false,
+			bool DrawDebugObjects = true,
+			bool DrawEditorIcons = true,
+			bool EditorIconDepth = true,
+			bool Wireframe = false,
 		},
 		PlayerSpawner = 
 		{
@@ -75,8 +80,7 @@ Level =
 		{
 			ProjectionMode ProjectionMode = Orthographic,
 			Facing Facing = NegativeZ,
-			SpriteSort SpriteSort = ZDepth,
-			string SpriteLayerOrder = "52b23ad3c402d436:DefaultSpriteLayerOrder",
+			CameraTransparentSort TransparentSort = InheritFromSpace,
 			float FieldOfView = 45,
 			float NearPlane = 0.5,
 			float FarPlane = 500,
@@ -89,10 +93,15 @@ Level =
 			float VerticalAngle = 0,
 			float HorizontalAngle = 0,
 			Vec3 LookTarget = [3.74355, 17.4732, 1.63636e-007],
+			float MoveSensitivity = 1,
 		},
 		EditorRenderer = 
 		{
 			Vec4 ClearColor = [0.278431, 0.278431, 0.278431, 1],
+			bool DrawNonVisible = true,
+			bool DrawDebugObjects = true,
+			bool DrawEditorIcons = true,
+			bool Wireframe = false,
 		},
 	},
 	Cog = 
@@ -119,8 +128,7 @@ Level =
 		{
 			ProjectionMode ProjectionMode = Perspective,
 			Facing Facing = NegativeZ,
-			SpriteSort SpriteSort = ViewDepth,
-			string SpriteLayerOrder = "52b23ad3c402d436:DefaultSpriteLayerOrder",
+			CameraTransparentSort TransparentSort = InheritFromSpace,
 			float FieldOfView = 45,
 			float NearPlane = 0.5,
 			float FarPlane = 200,
@@ -128,7 +136,7 @@ Level =
 		},
 		PlayerFollow = 
 		{
-			string PlayerObject = ":/Player",
+			CogPath PlayerObject = ":/Player",
 			float MinX = 0,
 			float MaxX = 0,
 			float MinY = 0,
@@ -153,9 +161,13 @@ Level =
 		},
 		MultiSprite = 
 		{
-			Vec4 Color = [0.243137, 0.360784, 0.247059, 1],
 			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [0.243137, 0.360784, 0.247059, 1],
 			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
 			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
 		},
 		TileMap = 
@@ -199,7 +211,7 @@ Level =
 		Door = 
 		{
 			string ToLevel = "536dc42546f7f36e:Sector0101",
-			int FromDirection = 1,
+			Enum FromDirection = Right,
 		},
 	},
 	Cog = 
@@ -235,7 +247,7 @@ Level =
 		Door = 
 		{
 			string ToLevel = "53740c6c967d5632:Sector0103",
-			int FromDirection = 1,
+			Enum FromDirection = Right,
 		},
 	},
 },
