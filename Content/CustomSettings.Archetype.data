@@ -1,4 +1,4 @@
-LevelSettings = 
+Cog = 
 {
 	LinkId = 
 	{
@@ -34,8 +34,36 @@ LevelSettings =
 		int Layer = 0,
 		bool Active = true,
 		bool Blocking = true,
-		uint Renderer = 1,
-		uint Camera = 2,
+		CogPath Renderer = 
+		{
+			string Path = ".",
+			bool ErrorOnResolveToNull = false,
+			bool ErrorOnPathCantCompute = false,
+			bool ErrorOnDirectLinkFail = false,
+			bool UpdateCogOnPathChange = true,
+			bool UpdatePathOnCogChange = true,
+			bool UpdateCogOnInitialize = true,
+			bool ResolvedNullErrorOccurred = false,
+			uint ResolvedCog = 1,
+			CogPathPreference PathPreference0 = CogRelative,
+			CogPathPreference PathPreference1 = SpaceRelative,
+			CogPathPreference PathPreference2 = Absolute,
+		},
+		CogPath Camera = 
+		{
+			string Path = ":/Camera",
+			bool ErrorOnResolveToNull = false,
+			bool ErrorOnPathCantCompute = false,
+			bool ErrorOnDirectLinkFail = false,
+			bool UpdateCogOnPathChange = true,
+			bool UpdatePathOnCogChange = true,
+			bool UpdateCogOnInitialize = true,
+			bool ResolvedNullErrorOccurred = false,
+			uint ResolvedCog = 2,
+			CogPathPreference PathPreference0 = CogRelative,
+			CogPathPreference PathPreference1 = SpaceRelative,
+			CogPathPreference PathPreference2 = Absolute,
+		},
 		ViewportScaling Scaling = Letterbox,
 		Vec2 Resolution = [4, 3],
 		Vec4 MarginColor = [0, 0, 0, 1],
@@ -43,6 +71,11 @@ LevelSettings =
 	ForwardRenderer = 
 	{
 		Vec4 ClearColor = [0.105, 0.09975, 0.09975, 1],
+		bool DrawNonVisible = false,
+		bool DrawDebugObjects = true,
+		bool DrawEditorIcons = true,
+		bool EditorIconDepth = true,
+		bool Wireframe = false,
 	},
 	PlayerSpawner = 
 	{
@@ -50,6 +83,9 @@ LevelSettings =
 		float DistanceOffset = 2,
 	},
 	LogicFlow = 
+	{
+	},
+	UnitTests = 
 	{
 	},
 },
