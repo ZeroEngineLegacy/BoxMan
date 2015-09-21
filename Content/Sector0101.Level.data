@@ -26,7 +26,7 @@ Level =
 		{
 			bool Active = true,
 			bool WakeUpOnChange = false,
-			float Drag = 0.7,
+			float Drag = 0.699999988,
 		},
 		CameraViewport = 
 		{
@@ -72,7 +72,7 @@ Level =
 		},
 		ForwardRenderer = 
 		{
-			Vec4 ClearColor = [0.105, 0.09975, 0.09975, 1],
+			Vec4 ClearColor = [0.104999997, 0.0997499973, 0.0997499973, 1],
 			bool DrawNonVisible = false,
 			bool DrawDebugObjects = true,
 			bool DrawEditorIcons = true,
@@ -89,6 +89,7 @@ Level =
 		},
 		UnitTests = 
 		{
+			int ScreenShotsToTake = 10,
 		},
 	},
 	Cog = 
@@ -103,9 +104,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [4.0489, 1.58796, 22.2989],
+			Vec3 Translation = [21.5867157, 8.04840755, 59.8555565],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.0319841, 0.0255768, 0.000818736, 0.999161],
+			Quat Rotation = [-0.0605023354, -0.0919159502, -0.00559519278, 0.993911266],
 		},
 		Camera = 
 		{
@@ -115,20 +116,20 @@ Level =
 			float FieldOfView = 45,
 			float NearPlane = 0.5,
 			float FarPlane = 500,
-			float Size = 13.952,
+			float Size = 13.9519997,
 		},
 		EditorCameraController = 
 		{
 			ControlMode ControlMode = Orbit,
-			float LookDistance = 27.1591,
-			float VerticalAngle = 0.0640001,
-			float HorizontalAngle = 6.232,
-			Vec3 LookTarget = [2.6622, -0.149042, -4.7691],
+			float LookDistance = 81.5903473,
+			float VerticalAngle = 0.121595904,
+			float HorizontalAngle = 6.46761894,
+			Vec3 LookTarget = [36.4390717, -1.84821439, -19.7588158],
 			float MoveSensitivity = 1,
 		},
 		EditorRenderer = 
 		{
-			Vec4 ClearColor = [0.278431, 0.278431, 0.278431, 1],
+			Vec4 ClearColor = [0.278430998, 0.278430998, 0.278430998, 1],
 			bool DrawNonVisible = true,
 			bool DrawDebugObjects = true,
 			bool DrawEditorIcons = true,
@@ -157,7 +158,7 @@ Level =
 			bool VisibilityCulling = true,
 			bool VisibilityEvents = true,
 			bool CastShadows = false,
-			Vec4 Color = [0.2448, 0.36, 0.245952, 1],
+			Vec4 Color = [0.244800001, 0.360000014, 0.245951995, 1],
 			BlendMode BlendMode = Alpha,
 			SpriteGeometryMode GeometryMode = ZPlane,
 			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
@@ -167,7 +168,7 @@ Level =
 			string SourceName = "536dc68dc129e94b:Level_TileMap00",
 			string PaletteName = "",
 			float UnitsPerTile = 1,
-			float MeshThickness = 1.2,
+			float MeshThickness = 1.20000005,
 		},
 	},
 	Cog = 
@@ -186,7 +187,7 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [6.53138, 0, 14.5],
+			Vec3 Translation = [6.53138018, 0, 14.5],
 			Vec3 Scale = [1, 1, 1],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -271,9 +272,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-1.93345, -1.02323, 0],
+			Vec3 Translation = [-1.93344998, -1.02322996, 0],
 			Vec3 Scale = [6, 1, 1],
-			Quat Rotation = [0, 0, -0.730122, 0.683317],
+			Quat Rotation = [0, 0, -0.73012203, 0.683317006],
 		},
 		Model = 
 		{
@@ -318,7 +319,7 @@ Level =
 			bool VisibilityCulling = true,
 			bool VisibilityEvents = true,
 			bool CastShadows = false,
-			Vec4 Color = [0.5, 0.02, 0.02, 1],
+			Vec4 Color = [0.5, 0.0199999996, 0.0199999996, 1],
 			BlendMode BlendMode = Alpha,
 			SpriteGeometryMode GeometryMode = ZPlane,
 			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
@@ -328,7 +329,7 @@ Level =
 			string SourceName = "536dab74fe3714a5:Level_TileMap01",
 			string PaletteName = "",
 			float UnitsPerTile = 1,
-			float MeshThickness = 1.2,
+			float MeshThickness = 1.20000005,
 		},
 	},
 	Cog = 
@@ -353,7 +354,7 @@ Level =
 			bool VisibilityCulling = true,
 			bool VisibilityEvents = true,
 			bool CastShadows = false,
-			Vec4 Color = [0.0945, 0.108885, 0.3, 1],
+			Vec4 Color = [0.0944999978, 0.108884998, 0.300000012, 1],
 			BlendMode BlendMode = Alpha,
 			SpriteGeometryMode GeometryMode = ZPlane,
 			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
@@ -363,7 +364,7 @@ Level =
 			string SourceName = "536daa5bb0e91336:Level_TileMap02",
 			string PaletteName = "",
 			float UnitsPerTile = 1,
-			float MeshThickness = 1.2,
+			float MeshThickness = 1.20000005,
 		},
 	},
 	Cog = 
@@ -378,8 +379,8 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [0.217046, -3.3566, 0],
-			Vec3 Scale = [6, 1, 0.9],
+			Vec3 Translation = [0.217045993, -3.35660005, 0],
+			Vec3 Scale = [6, 1, 0.899999976],
 			Quat Rotation = [0, 0, 0, 1],
 		},
 		Model = 
@@ -432,9 +433,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [0.747971, -1.02323, 0],
+			Vec3 Translation = [0.747970998, -1.02322996, 0],
 			Vec3 Scale = [6, 1, 1],
-			Quat Rotation = [0, 0, -0.677037, 0.73595],
+			Quat Rotation = [0, 0, -0.677037001, 0.735949993],
 		},
 		Model = 
 		{
@@ -469,7 +470,7 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-4.23543, 3, 0],
+			Vec3 Translation = [-4.23542976, 3, 0],
 			Vec3 Scale = [1, 4, 1],
 			Quat Rotation = [0, 0, 0, 1],
 		},

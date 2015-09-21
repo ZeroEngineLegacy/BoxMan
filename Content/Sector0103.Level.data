@@ -26,7 +26,7 @@ Level =
 		{
 			bool Active = true,
 			bool WakeUpOnChange = false,
-			float Drag = 0.7,
+			float Drag = 0.699999988,
 		},
 		CameraViewport = 
 		{
@@ -36,15 +36,43 @@ Level =
 			int Layer = 0,
 			bool Active = true,
 			bool Blocking = true,
-			uint Renderer = 1,
-			uint Camera = 2,
+			CogPath Renderer = 
+			{
+				string Path = ".",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 1,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			CogPath Camera = 
+			{
+				string Path = ":/Camera",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 2,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
 			ViewportScaling Scaling = Letterbox,
 			Vec2 Resolution = [4, 3],
 			Vec4 MarginColor = [0, 0, 0, 1],
 		},
 		ForwardRenderer = 
 		{
-			Vec4 ClearColor = [0.105, 0.09975, 0.09975, 1],
+			Vec4 ClearColor = [0.104999997, 0.0997499973, 0.0997499973, 1],
 			bool DrawNonVisible = false,
 			bool DrawDebugObjects = true,
 			bool DrawEditorIcons = true,
@@ -72,9 +100,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [0.00629717, 1.19834, 16.4443],
+			Vec3 Translation = [-42.1660156, 5.06983519, 67.6162491],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.0399881, 0.00799351, 0.000319911, 0.999168],
+			Quat Rotation = [-0.0399880521, 0.00799351279, 0.000319911022, 0.999168217],
 		},
 		Camera = 
 		{
@@ -89,15 +117,15 @@ Level =
 		EditorCameraController = 
 		{
 			ControlMode ControlMode = Orbit,
-			float LookDistance = 16.5746,
-			float VerticalAngle = 0.08,
-			float HorizontalAngle = -0.016,
-			Vec3 LookTarget = [-0.258037, -0.126216, -0.0752234],
+			float LookDistance = 67.2132263,
+			float VerticalAngle = 0.0799999982,
+			float HorizontalAngle = -0.0160000008,
+			Vec3 LookTarget = [-43.2379417, -0.301488698, 0.626567125],
 			float MoveSensitivity = 1,
 		},
 		EditorRenderer = 
 		{
-			Vec4 ClearColor = [0.278431, 0.278431, 0.278431, 1],
+			Vec4 ClearColor = [0.278430998, 0.278430998, 0.278430998, 1],
 			bool DrawNonVisible = true,
 			bool DrawDebugObjects = true,
 			bool DrawEditorIcons = true,
@@ -136,7 +164,21 @@ Level =
 		},
 		PlayerFollow = 
 		{
-			CogPath PlayerObject = ":/Player",
+			CogPath PlayerObject = 
+			{
+				string Path = ":/Player",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 4294967293,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
 			float MinX = -63,
 			float MaxX = 0,
 			float MinY = 0,
@@ -165,7 +207,7 @@ Level =
 			bool VisibilityCulling = true,
 			bool VisibilityEvents = true,
 			bool CastShadows = false,
-			Vec4 Color = [0.243137, 0.360784, 0.247059, 1],
+			Vec4 Color = [0.243137002, 0.360783994, 0.247059003, 1],
 			BlendMode BlendMode = Alpha,
 			SpriteGeometryMode GeometryMode = ZPlane,
 			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
@@ -175,7 +217,7 @@ Level =
 			string SourceName = "5374091a1dd90198:Sector0103_TileMap00",
 			string PaletteName = "",
 			float UnitsPerTile = 1,
-			float MeshThickness = 1.2,
+			float MeshThickness = 1.20000005,
 		},
 	},
 	Cog = 
