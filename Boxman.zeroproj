@@ -6,8 +6,8 @@ Cog =
 		string ProjectOwner = "",
 		string DefaultLevel = "Level",
 		string ProjectSpace = "Space",
-		string ProjectFolder = "C:\Users\JoshD\Desktop\Zero\ZeroMemory\BoxManPlatformer2D",
-		uint ProjectEngineRevision = 12259,
+		string ProjectFolder = "C:\Users\ZeroDavis\Desktop\Zero\ZeroSummerBranch\BoxManPlatformer2D",
+		uint ProjectEngineRevision = 13221,
 		bool AutoTakeProjectScreenshot = true,
 	},
 	EditorSettings = 
