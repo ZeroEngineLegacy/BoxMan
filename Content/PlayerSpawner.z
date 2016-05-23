@@ -17,7 +17,7 @@ class PlayerSpawner : ZilchComponent
 
     function OnLevelStarted(gameEvent : GameEvent)
     {
-        var player = Zero.ObjectStore.RestoreOrArchetype("Player", "Player", this.Space);
+        var player = Zero.ObjectStore.RestoreOrArchetype("Player", Archetype.Player, this.Space);
         Zero.ObjectStore.Erase("Player");
         
         var fromLevel = this.GameSession.LevelData.FromLevelName;
