@@ -1,121 +1,117 @@
-Cog = 
+[Version:1]
+Cog 
 {
-	LinkId = 
+	var Name = "Player"
+	var LinkId = 1
+	Transform 
 	{
-		uint Id = 1,
-	},
-	Named = 
+		var Translation = Real3{30.0091324, -13.348815, 5.75545502}
+		var Scale = Real3{1, 1, 1}
+		var Rotation = Quaternion{0, 0, 0, 1}
+	}
+	RigidBody 
 	{
-		string Name = "Player",
-	},
-	Archetyped = 
+		var Velocity = Real3{0, 0, 0}
+		var AngularVelocity = Real3{0, 0, 0}
+		var DynamicState = RigidBodyDynamicState.Kinematic
+		var AllowSleep = false
+		var Asleep = false
+		var RotationLocked = false
+		var Mode2D = Mode2DStates.Mode2D
+	}
+	BoxCollider 
 	{
-		string Name = "536dbf75abdc97ad:Player",
-	},
-	Transform = 
+		var Ghost = false
+		var SendsEvents = true
+		var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+		var CollisionGroup = "4e740859314e5515:DefaultGroup"
+		var Offset = Real3{0, 0, 0}
+		var HalfSize = Real3{0.300000012, 1.29999995, 0.5}
+	}
+	AnimationController 
 	{
-		Vec3 Translation = [0, 0, 0],
-		Vec3 Scale = [1, 1, 1],
-		Quat Rotation = [0, 0, 0, 1],
-	},
-	RigidBody = 
-	{
-		bool Static = false,
-		bool Asleep = false,
-		bool Kinematic = true,
-		bool RotationLocked = false,
-		bool Mode2D = false,
-		bool AllowSleep = false,
-		bool Inherit2DMode = true,
-		Vec3 Velocity = [0, 0, 0],
-		Vec3 AngularVelocity = [0, 0, 0],
-	},
-	BoxCollider = 
-	{
-		bool Ghost = false,
-		bool SendsMessages = true,
-		bool Seamless = true,
-		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
-		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-		Vec3 Offset = [0, 0, 0],
-		Vec3 Size = [0.3, 1.3, 0.5],
-	},
-	CharacterInputZ = 
-	{
-		string Projectile = "4de020863e85dcdf:Cube",
-	},
-	AnimationController = 
-	{
-		string Child = "Sprite",
-		string Idle = "537b63b06ee7517a:BoxManIdle",
-		string Walk = "537a9191f87a2ff7:BoxManWalk",
-		string Run = "537b7c9f806f8667:BoxManRun",
-		string JumpUp = "537b7c5f9411f542:BoxManJumpUp",
-		string JumpDown = "537b7c4f9b3da794:BoxManJumpDown",
-		string Flip = "537b79580995a16d:BoxManFlip",
-		bool Flipping = false,
-		bool Walking = false,
-		bool FlipX = false,
-	},
-	CustomCollisionEventTracker = 
-	{
-	},
-	SweptController = 
-	{
-		Vec3 WorldUp = [0, 1, 0],
-		bool LockZAxis = true,
-		bool ForwardEvents = true,
-		float Gravity = 30,
-		float JumpSpeed = 18,
-		float JumpCancelFactor = 0.8,
-		float MaxMoveSpeed = 10,
-		float MaxFallSpeed = 50,
-		float GroundAcceleration = 50,
-		float AirAcceleration = 10,
-		float GroundDeceleration = 50,
-		float AirDeceleration = 10,
-		float MaxGroundSlope = 45,
-		float MaxCeilingSlope = 45,
-		float GroundSnapDistance = 0.5,
-		Vec3 ControllerVelocity = [0, 0, 0],
-		bool Grounded = false,
-		bool Jumping = false,
-		float GroundTraction = 0,
-		float AirTraction = 0,
-	},
-	Hierarchy = 
-	{
-		Cog = 
+		var Child = CogPath
 		{
-			LinkId = 
+			var Path = "Sprite"
+			var ErrorOnResolveToNull = false
+			var ErrorOnPathCantCompute = false
+			var ErrorOnDirectLinkFail = false
+			var UpdateCogOnPathChange = true
+			var UpdatePathOnCogChange = true
+			var UpdateCogOnInitialize = true
+			var ResolvedNullErrorOccurred = false
+			var ResolvedCog = 2
+			var PathPreference0 = CogPathPreference.CogRelative
+			var PathPreference1 = CogPathPreference.SpaceRelative
+			var PathPreference2 = CogPathPreference.Absolute
+		}
+		var Idle = "537b63b06ee7517a:BoxManIdle"
+		var Walk = "537a9191f87a2ff7:BoxManWalk"
+		var Run = "537b7c9f806f8667:BoxManRun"
+		var JumpUp = "537b7c5f9411f542:BoxManJumpUp"
+		var JumpDown = "537b7c4f9b3da794:BoxManJumpDown"
+		var Flip = "537b79580995a16d:BoxManFlip"
+		var Flipping = false
+		var Walking = false
+		var FlipX = false
+	}
+	CustomCollisionEventTracker 
+	{
+	}
+	SweptController 
+	{
+		var WorldUp = Real3{0, 1, 0}
+		var LockZAxis = true
+		var ForwardEvents = true
+		var Gravity = 30
+		var JumpSpeed = 18
+		var JumpCancelFactor = 0.800000012
+		var MaxMoveSpeed = 10
+		var MaxFallSpeed = 50
+		var GroundAcceleration = 50
+		var AirAcceleration = 10
+		var GroundDeceleration = 50
+		var AirDeceleration = 10
+		var MaxGroundSlope = 45
+		var MaxCeilingSlope = 45
+		var GroundSnapDistance = 0.5
+		var ControllerVelocity = Real3{0, 0, 0}
+		var Grounded = false
+		var Jumping = false
+		var GroundTraction = 0
+		var AirTraction = 0
+	}
+	CharacterInputZ 
+	{
+		var Projectile = "4de020863e85dcdf:Cube"
+	}
+	Hierarchy 
+	{
+		Cog [Id:0x595d504b8b417e55]
+		{
+			var Name = "Sprite"
+			var LinkId = 2
+			Transform 
 			{
-				uint Id = 2,
-			},
-			Named = 
+				var Translation = Real3{0, 0, 0}
+				var Scale = Real3{1.75, 1.75, 1}
+				var Rotation = Quaternion{0, 0, 0, 1}
+			}
+			Sprite 
 			{
-				string Name = "Sprite",
-			},
-			Transform = 
-			{
-				Vec3 Translation = [0, 0, 0],
-				Vec3 Scale = [1.75, 1.75, 1],
-				Quat Rotation = [0, 0, 0, 1],
-			},
-			Sprite = 
-			{
-				string SpriteSource = "537b63b06ee7517a:BoxManIdle",
-				bool FlipX = false,
-				bool FlipY = false,
-				Vec4 Color = [0.831373, 0.34902, 0, 1],
-				bool Visible = true,
-				bool OnTop = false,
-				bool AnimationActive = true,
-				float AnimationSpeed = 1,
-				uint StartFrame = 0,
-				BlendMode BlendMode = Alpha,
-				SpriteGeometryMode GeometryMode = ZPlane,
-				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
-			},
-		},
-	},
-},
+				var Visible = true
+				var ViewCulling = true
+				var VisibilityEvents = true
+				var Material = "582c575af53d18c9:AlphaSprite"
+				var VertexColor = Real4{0.82745105, 0.349019617, 0, 1}
+				var GeometryMode = SpriteGeometryMode.ZPlane
+				var SpriteSource = "537b63b06ee7517a:BoxManIdle"
+				var FlipX = false
+				var FlipY = false
+				var AnimationActive = true
+				var AnimationSpeed = 1
+				var StartFrame = 0
+			}
+		}
+	}
+}

@@ -28,7 +28,7 @@ class PlayerSpawner : ZilchComponent
             return;
         }
         
-        foreach (var cog in this.Space.AllObjects())
+        foreach (var cog in this.Space.AllObjects)
         {
             // Find door object that connects to where player came from
             if (cog.Door != null)
@@ -47,7 +47,6 @@ class PlayerSpawner : ZilchComponent
                     }
                     // TODO
                     // Make cases for vertical door entrances
-                    
                     player.Transform.Translation = pos;
                     
                     this.GameSession.LevelData.FromLevelName = "";

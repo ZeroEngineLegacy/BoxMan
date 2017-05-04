@@ -1,259 +1,180 @@
-Level = 
+[Version:1]
+Level 
 {
-	Cog = 
+	Cog 
 	{
-		LinkId = 
+		var Name = "LevelSettings"
+		var LinkId = 1
+		GravityEffect 
 		{
-			uint Id = 1,
-		},
-		Named = 
+			var Active = true
+			var WakeUpOnChange = false
+			var DebugDrawEffect = true
+			var LocalSpaceDirection = true
+			var Strength = 10
+			var Direction = Real3{0, -1, 0}
+		}
+		DragEffect 
 		{
-			string Name = "LevelSettings",
-		},
-		Archetyped = 
+			var Active = true
+			var WakeUpOnChange = false
+			var DebugDrawEffect = true
+			var LinearDamping = 0.200000003
+			var AngularDamping = 0.100000001
+			var LinearDrag = 0
+			var AngularDrag = 0
+		}
+		PlayerSpawner 
 		{
-			string Name = "536dba39b3e7165f:CustomSettings",
-		},
-		GravityEffect = 
+			var PlayerArchetype = "536dbf75abdc97ad:Player"
+			var DistanceOffset = 2
+		}
+		LogicFlow 
 		{
-			bool Active = true,
-			bool WakeUpOnChange = false,
-			bool LocalSpaceDirection = true,
-			float Strength = 10,
-			Vec3 Direction = [0, -1, 0],
-		},
-		DragEffect = 
+		}
+		UnitTests 
 		{
-			bool Active = true,
-			bool WakeUpOnChange = false,
-			float Drag = 0.699999988,
-		},
-		CameraViewport = 
+			var ScreenShotsToTake = 10
+		}
+	}
+	Cog 
+	{
+		var Name = "EditorCamera"
+		var LinkId = 2
+		Transform 
 		{
-			bool Background = true,
-			Vec2 Offset = [0, 0],
-			Vec2 Size = [1, 1],
-			int Layer = 0,
-			bool Active = true,
-			bool Blocking = true,
-			CogPath Renderer = 
+			var Translation = Real3{-56.6419296, 11.3699656, 65.4472961}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{-0.0867031515, -0.101391926, -0.00887064729, 0.991021514}
+		}
+		Camera 
+		{
+			var NearPlane = 0.5
+			var FarPlane = 500
+			var PerspectiveMode = PerspectiveMode.Perspective
+			var FieldOfView = 45
+			var Size = 20
+		}
+		EditorCameraController 
+		{
+			var ControlMode = ControlMode.Orbit
+			var LookDistance = 67.2132263
+			var VerticalAngle = 0.17453292
+			var HorizontalAngle = 0.203911498
+			var LookTarget = Real3{-43.2379417, -0.301488698, 0.626567125}
+			var MoveSensitivity = 1
+		}
+		CameraViewport 
+		{
+			var RenderInEditor = true
+			var RenderInGame = false
+			var RenderToViewport = true
+			var ForwardViewportEvents = false
+			var RenderOrder = 0
+			var NormalizedSize = Real2{1, 1}
+			var NormalizedOffset = Real2{0, 0}
+			var Camera = CogPath
 			{
-				string Path = ".",
-				bool ErrorOnResolveToNull = false,
-				bool ErrorOnPathCantCompute = false,
-				bool ErrorOnDirectLinkFail = false,
-				bool UpdateCogOnPathChange = true,
-				bool UpdatePathOnCogChange = true,
-				bool UpdateCogOnInitialize = true,
-				bool ResolvedNullErrorOccurred = false,
-				uint ResolvedCog = 1,
-				CogPathPreference PathPreference0 = CogRelative,
-				CogPathPreference PathPreference1 = SpaceRelative,
-				CogPathPreference PathPreference2 = Absolute,
-			},
-			CogPath Camera = 
+				var Path = "."
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var ResolvedCog = 2
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var Renderer = CogPath
 			{
-				string Path = ":/Camera",
-				bool ErrorOnResolveToNull = false,
-				bool ErrorOnPathCantCompute = false,
-				bool ErrorOnDirectLinkFail = false,
-				bool UpdateCogOnPathChange = true,
-				bool UpdatePathOnCogChange = true,
-				bool UpdateCogOnInitialize = true,
-				bool ResolvedNullErrorOccurred = false,
-				uint ResolvedCog = 2,
-				CogPathPreference PathPreference0 = CogRelative,
-				CogPathPreference PathPreference1 = SpaceRelative,
-				CogPathPreference PathPreference2 = Absolute,
-			},
-			ViewportScaling Scaling = Letterbox,
-			Vec2 Resolution = [4, 3],
-			Vec4 MarginColor = [0, 0, 0, 1],
-		},
-		ForwardRenderer = 
-		{
-			Vec4 ClearColor = [0.104999997, 0.0997499973, 0.0997499973, 1],
-			bool DrawNonVisible = false,
-			bool DrawDebugObjects = true,
-			bool DrawEditorIcons = true,
-			bool EditorIconDepth = true,
-			bool Wireframe = false,
-		},
-		PlayerSpawner = 
-		{
-			string PlayerArchetype = "536dbf75abdc97ad:Player",
-			float DistanceOffset = 2,
-		},
-		LogicFlow = 
-		{
-		},
-	},
-	Cog = 
+				var Path = ":/Renderer"
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var ResolvedCog = 3
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var Resolution = Real2{1280, 720}
+			var ViewportScaling = ViewportScaling.Fill
+			var MarginColor = Real4{0, 0, 0, 1}
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "Renderer"
+		var LinkId = 3
+		DeferredRenderer 
 		{
-			uint Id = 3,
-		},
-		Named = 
-		{
-			string Name = "EditorCamera",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [-42.1660156, 5.06983519, 67.6162491],
-			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.0399880521, 0.00799351279, 0.000319911022, 0.999168217],
-		},
-		Camera = 
-		{
-			ProjectionMode ProjectionMode = Perspective,
-			Facing Facing = NegativeZ,
-			CameraTransparentSort TransparentSort = InheritFromSpace,
-			float FieldOfView = 45,
-			float NearPlane = 0.5,
-			float FarPlane = 500,
-			float Size = 20,
-		},
-		EditorCameraController = 
-		{
-			ControlMode ControlMode = Orbit,
-			float LookDistance = 67.2132263,
-			float VerticalAngle = 0.0799999982,
-			float HorizontalAngle = -0.0160000008,
-			Vec3 LookTarget = [-43.2379417, -0.301488698, 0.626567125],
-			float MoveSensitivity = 1,
-		},
-		EditorRenderer = 
-		{
-			Vec4 ClearColor = [0.278430998, 0.278430998, 0.278430998, 1],
-			bool DrawNonVisible = true,
-			bool DrawDebugObjects = true,
-			bool DrawEditorIcons = true,
-			bool Wireframe = false,
-		},
-	},
-	Cog = 
+			var DrawDebug = true
+			var GeometryDebug = GeometryValue.None
+			var ShowDiffuse = true
+			var ShowSpecular = true
+			var Skybox = "5822dec85e380cf1:SimpleSkybox"
+			var ClearColor = Real4{0, 0, 0, 1}
+			var DrawSkybox = true
+			var DirectLighting = true
+			var IndirectLighting = true
+			var IndirectIntensity = 1
+			var ToneMap = true
+		}
+	}
+	Cog [InheritId:"536dbc509dd96f58:PlayerCamera"]
 	{
-		LinkId = 
+		Transform 
 		{
-			uint Id = 2,
-		},
-		Named = 
+			var Translation = Real3{0, 0, 14.5}
+		}
+		PlayerFollow 
 		{
-			string Name = "Camera",
-		},
-		Archetyped = 
-		{
-			string Name = "536dbc509dd96f58:PlayerCamera",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [0, 0, 14.5],
-			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		Camera = 
-		{
-			ProjectionMode ProjectionMode = Perspective,
-			Facing Facing = NegativeZ,
-			CameraTransparentSort TransparentSort = InheritFromSpace,
-			float FieldOfView = 45,
-			float NearPlane = 0.5,
-			float FarPlane = 200,
-			float Size = 20,
-		},
-		PlayerFollow = 
-		{
-			CogPath PlayerObject = 
-			{
-				string Path = ":/Player",
-				bool ErrorOnResolveToNull = false,
-				bool ErrorOnPathCantCompute = false,
-				bool ErrorOnDirectLinkFail = false,
-				bool UpdateCogOnPathChange = true,
-				bool UpdatePathOnCogChange = true,
-				bool UpdateCogOnInitialize = true,
-				bool ResolvedNullErrorOccurred = false,
-				uint ResolvedCog = 4294967293,
-				CogPathPreference PathPreference0 = CogRelative,
-				CogPathPreference PathPreference1 = SpaceRelative,
-				CogPathPreference PathPreference2 = Absolute,
-			},
-			float MinX = -63,
-			float MaxX = 0,
-			float MinY = 0,
-			float MaxY = 0,
-		},
-	},
-	Cog = 
+			var MinX = -63
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "TileMap"
+		var LinkId = 4
+		Transform 
 		{
-			uint Id = 4,
-		},
-		Named = 
+			var Translation = Real3{0, 0, 0}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		MultiSprite 
 		{
-			string Name = "TileMap",
-		},
-		Transform = 
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var Material = "582c575af53d18c9:AlphaSprite"
+			var VertexColor = Real4{0.24313727, 0.360784322, 0.247058839, 1}
+			var GeometryMode = SpriteGeometryMode.ZPlane
+			var AnimationActive = true
+			var AnimationSpeed = 1
+		}
+		TileMap 
 		{
-			Vec3 Translation = [0, 0, 0],
-			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		MultiSprite = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = false,
-			Vec4 Color = [0.243137002, 0.360783994, 0.247059003, 1],
-			BlendMode BlendMode = Alpha,
-			SpriteGeometryMode GeometryMode = ZPlane,
-			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
-		},
-		TileMap = 
-		{
-			string SourceName = "5374091a1dd90198:Sector0103_TileMap00",
-			string PaletteName = "",
-			float UnitsPerTile = 1,
-			float MeshThickness = 1.20000005,
-		},
-	},
-	Cog = 
+			var Source = "5374091a1dd90198:Sector0103_TileMap00"
+			var PaletteName = ""
+			var MeshThickness = 1.20000005
+		}
+	}
+	Cog [InheritId:"536db2bdd321a13a:Door"]
 	{
-		LinkId = 
+		Transform 
 		{
-			uint Id = 5,
-		},
-		Named = 
+			var Translation = Real3{8.5, 0, 0}
+		}
+		Door 
 		{
-			string Name = "Door",
-		},
-		Archetyped = 
-		{
-			string Name = "536db2bdd321a13a:Door",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [8.5, 0, 0],
-			Vec3 Scale = [1, 4, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		BoxCollider = 
-		{
-			bool Ghost = true,
-			bool SendsMessages = true,
-			bool Seamless = false,
-			string MaterialName = "4faa6050b8692851:HardMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-		Door = 
-		{
-			string ToLevel = "536dbf66ae911f78:Sector0102",
-			Enum FromDirection = Left,
-		},
-	},
-},
+			var ToLevel = "536dbf66ae911f78:Sector0102"
+		}
+	}
+}

@@ -1,91 +1,89 @@
-Cog = 
+[Version:1]
+Cog 
 {
-	LinkId = 
+	var Name = "LevelSettings"
+	var LinkId = 1
+	GravityEffect 
 	{
-		uint Id = 1,
-	},
-	Named = 
+		var Active = true
+		var WakeUpOnChange = false
+		var DebugDrawEffect = true
+		var LocalSpaceDirection = true
+		var Strength = 10
+		var Direction = Real3{0, -1, 0}
+	}
+	DragEffect 
 	{
-		string Name = "LevelSettings",
-	},
-	Archetyped = 
+		var Active = true
+		var WakeUpOnChange = false
+		var DebugDrawEffect = true
+		var LinearDamping = 0.200000003
+		var AngularDamping = 0.100000001
+		var LinearDrag = 0
+		var AngularDrag = 0
+	}
+	CameraViewport 
 	{
-		string Name = "536dba39b3e7165f:CustomSettings",
-	},
-	GravityEffect = 
-	{
-		bool Active = true,
-		bool WakeUpOnChange = false,
-		bool LocalSpaceDirection = true,
-		float Strength = 10,
-		Vec3 Direction = [0, -1, 0],
-	},
-	DragEffect = 
-	{
-		bool Active = true,
-		bool WakeUpOnChange = false,
-		float Drag = 0.7,
-	},
-	CameraViewport = 
-	{
-		bool Background = true,
-		Vec2 Offset = [0, 0],
-		Vec2 Size = [1, 1],
-		int Layer = 0,
-		bool Active = true,
-		bool Blocking = true,
-		CogPath Renderer = 
+		var RenderInEditor = false
+		var RenderInGame = true
+		var RenderToViewport = true
+		var ForwardViewportEvents = false
+		var RenderOrder = 0
+		var NormalizedSize = Real2{1, 1}
+		var NormalizedOffset = Real2{0, 0}
+		var Camera = CogPath
 		{
-			string Path = ".",
-			bool ErrorOnResolveToNull = false,
-			bool ErrorOnPathCantCompute = false,
-			bool ErrorOnDirectLinkFail = false,
-			bool UpdateCogOnPathChange = true,
-			bool UpdatePathOnCogChange = true,
-			bool UpdateCogOnInitialize = true,
-			bool ResolvedNullErrorOccurred = false,
-			uint ResolvedCog = 1,
-			CogPathPreference PathPreference0 = CogRelative,
-			CogPathPreference PathPreference1 = SpaceRelative,
-			CogPathPreference PathPreference2 = Absolute,
-		},
-		CogPath Camera = 
+			var Path = ":/Camera"
+			var ErrorOnResolveToNull = false
+			var ErrorOnPathCantCompute = false
+			var ErrorOnDirectLinkFail = false
+			var UpdateCogOnPathChange = true
+			var UpdatePathOnCogChange = true
+			var UpdateCogOnInitialize = true
+			var ResolvedNullErrorOccurred = false
+			var ResolvedCog = 2
+			var PathPreference0 = CogPathPreference.CogRelative
+			var PathPreference1 = CogPathPreference.SpaceRelative
+			var PathPreference2 = CogPathPreference.Absolute
+		}
+		var Renderer = CogPath
 		{
-			string Path = ":/Camera",
-			bool ErrorOnResolveToNull = false,
-			bool ErrorOnPathCantCompute = false,
-			bool ErrorOnDirectLinkFail = false,
-			bool UpdateCogOnPathChange = true,
-			bool UpdatePathOnCogChange = true,
-			bool UpdateCogOnInitialize = true,
-			bool ResolvedNullErrorOccurred = false,
-			uint ResolvedCog = 2,
-			CogPathPreference PathPreference0 = CogRelative,
-			CogPathPreference PathPreference1 = SpaceRelative,
-			CogPathPreference PathPreference2 = Absolute,
-		},
-		ViewportScaling Scaling = Letterbox,
-		Vec2 Resolution = [4, 3],
-		Vec4 MarginColor = [0, 0, 0, 1],
-	},
-	ForwardRenderer = 
+			var Path = "."
+			var ErrorOnResolveToNull = false
+			var ErrorOnPathCantCompute = false
+			var ErrorOnDirectLinkFail = false
+			var UpdateCogOnPathChange = true
+			var UpdatePathOnCogChange = true
+			var UpdateCogOnInitialize = true
+			var ResolvedNullErrorOccurred = false
+			var ResolvedCog = 1
+			var PathPreference0 = CogPathPreference.CogRelative
+			var PathPreference1 = CogPathPreference.SpaceRelative
+			var PathPreference2 = CogPathPreference.Absolute
+		}
+		var Resolution = Real2{4, 3}
+		var ViewportScaling = ViewportScaling.Fill
+		var MarginColor = Real4{0, 0, 0, 1}
+	}
+	ForwardRenderer 
 	{
-		Vec4 ClearColor = [0.105, 0.09975, 0.09975, 1],
-		bool DrawNonVisible = false,
-		bool DrawDebugObjects = true,
-		bool DrawEditorIcons = true,
-		bool EditorIconDepth = true,
-		bool Wireframe = false,
-	},
-	PlayerSpawner = 
+		var ClearColor = Vec4{}
+		var DrawNonVisible = false
+		var DrawDebugObjects = true
+		var DrawEditorIcons = true
+		var EditorIconDepth = true
+		var Wireframe = false
+	}
+	PlayerSpawner 
 	{
-		string PlayerArchetype = "536dbf75abdc97ad:Player",
-		float DistanceOffset = 2,
-	},
-	LogicFlow = 
+		var PlayerArchetype = "536dbf75abdc97ad:Player"
+		var DistanceOffset = 2
+	}
+	LogicFlow 
 	{
-	},
-	UnitTests = 
+	}
+	UnitTests 
 	{
-	},
-},
+		var ScreenShotsToTake = 10
+	}
+}

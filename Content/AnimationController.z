@@ -4,17 +4,17 @@ class AnimationController : ZilchComponent
     var Child : CogPath = null;
     
     [Property]
-    var Idle : SpriteSource = SpriteSource.Find("BoxManIdle");
+    var Idle : SpriteSource = SpriteSource.BoxManIdle;
     [Property]
-    var Walk : SpriteSource = SpriteSource.Find("BoxManWalk");
+    var Walk : SpriteSource = SpriteSource.BoxManWalk;
     [Property]
-    var Run : SpriteSource = SpriteSource.Find("BoxManRun");
+    var Run : SpriteSource = SpriteSource.BoxManRun;
     [Property]
-    var JumpUp : SpriteSource = SpriteSource.Find("BoxManJumpUp");
+    var JumpUp : SpriteSource = SpriteSource.BoxManJumpUp;
     [Property]
-    var JumpDown : SpriteSource = SpriteSource.Find("BoxManJumpDown");
+    var JumpDown : SpriteSource = SpriteSource.BoxManJumpDown;
     [Property]
-    var Flip : SpriteSource = SpriteSource.Find("BoxManFlip");
+    var Flip : SpriteSource = SpriteSource.BoxManFlip;
     
     [Serialized]
     var Flipping : Boolean = false;

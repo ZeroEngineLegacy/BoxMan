@@ -93,7 +93,8 @@ class UnitTests : ZilchComponent
         
         timeout(9999)
         {
-            this.Owner.CameraViewport.Viewport.ScreenCapture(filePath);
+          // Not supported right now
+          //this.Owner.CameraViewport.Viewport.ScreenCapture(filePath);
         }
         
         ++this.ScreenShotsTaken;

@@ -1,28 +1,18 @@
-GameSession = 
+[Version:1]
+GameSession 
 {
-	LinkId = 
+	var Name = ""
+	var LinkId = 1
+	DefaultGameSetup 
 	{
-		uint Id = 1,
-	},
-	Archetyped = 
+		var StartingSpace = "536dc42546f6100c:Space"
+		var StartingLevel = "536dc42546f7f36e:Sector0101"
+		var LoadEditingLevel = true
+	}
+	LevelData 
 	{
-		string Name = "536dc42546f769f3:Game",
-	},
-	Viewports = 
+	}
+	RunUnitTests 
 	{
-	},
-	DefaultGameSetup = 
-	{
-		string StartingSpaceName = "536dc42546f6100c:Space",
-		string StartingLevelName = "536dc42546f7f36e:Sector0101",
-	},
-	LevelData = 
-	{
-	},
-	CameraViewports = 
-	{
-	},
-	RunUnitTests = 
-	{
-	},
-},
+	}
+}

@@ -1,22 +1,27 @@
-Cog = 
+[Version:1]
+Cog 
 {
-	Project = 
+	var Name = ""
+	ProjectSettings 
 	{
-		string ProjectName = "Boxman",
-		string ProjectOwner = "",
-		string DefaultLevel = "Level",
-		string ProjectSpace = "Space",
-		string ProjectFolder = "C:\Users\ZeroDavis\Desktop\Zero\ZeroSummerBranch\BoxManPlatformer2D",
-		uint ProjectEngineRevision = 13459,
-		bool AutoTakeProjectScreenshot = true,
-	},
-	EditorSettings = 
+		var ProjectName = "Boxman"
+		var ProjectOwner = ""
+		var DefaultLevel = "Level"
+		var ProjectSpace = "Space"
+		var ProjectEngineRevision = 16582
+		var AutoTakeProjectScreenshot = true
+		var Guid = 0x595da4cb7220565f
+	}
+	EditorSettings 
 	{
-		EditorMode EditorMode = Mode2D,
-		bool ViewCube = true,
-		float ViewCubeViewportSize = 150,
-		ScriptReloadMethod ScriptReloadEditor = ReInitializeObjects,
-		ScriptReloadMethod ScriptReloadGame = PatchObjects,
-		bool AutoUpdateContentChanges = true,
-	},
-},
+		var ViewCube = true
+		var ViewCubeSize = 0.150000006
+		var ScriptReloadEditor = ScriptReloadMethod.ReInitializeObjects
+		var ScriptReloadGame = ScriptReloadMethod.PatchObjects
+		var AutoUpdateContentChanges = true
+	}
+	ProjectConfig 
+	{
+		var EditorMode = EditorMode.Mode3D
+	}
+}

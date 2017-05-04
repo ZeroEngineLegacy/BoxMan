@@ -1,515 +1,451 @@
-Level = 
+[Version:1]
+Level 
 {
-	Cog = 
+	Cog 
 	{
-		LinkId = 
+		var Name = "LevelSettings"
+		var LinkId = 1
+		GravityEffect 
 		{
-			uint Id = 1,
-		},
-		Named = 
+			var Active = true
+			var WakeUpOnChange = false
+			var DebugDrawEffect = true
+			var LocalSpaceDirection = true
+			var Strength = 10
+			var Direction = Real3{0, -1, 0}
+		}
+		DragEffect 
 		{
-			string Name = "LevelSettings",
-		},
-		Archetyped = 
+			var Active = true
+			var WakeUpOnChange = false
+			var DebugDrawEffect = true
+			var LinearDamping = 0.200000003
+			var AngularDamping = 0.100000001
+			var LinearDrag = 0
+			var AngularDrag = 0
+		}
+		PlayerSpawner 
 		{
-			string Name = "536dba39b3e7165f:CustomSettings",
-		},
-		GravityEffect = 
+			var PlayerArchetype = "536dbf75abdc97ad:Player"
+			var DistanceOffset = 2
+		}
+		LogicFlow 
 		{
-			bool Active = true,
-			bool WakeUpOnChange = false,
-			bool LocalSpaceDirection = true,
-			float Strength = 10,
-			Vec3 Direction = [0, -1, 0],
-		},
-		DragEffect = 
+		}
+		UnitTests 
 		{
-			bool Active = true,
-			bool WakeUpOnChange = false,
-			float Drag = 0.699999988,
-		},
-		CameraViewport = 
+			var ScreenShotsToTake = 10
+		}
+	}
+	Cog 
+	{
+		var Name = "Renderer"
+		var LinkId = 2
+		DeferredRenderer 
 		{
-			bool Background = true,
-			Vec2 Offset = [0, 0],
-			Vec2 Size = [1, 1],
-			int Layer = 0,
-			bool Active = true,
-			bool Blocking = true,
-			CogPath Renderer = 
+			var DrawDebug = true
+			var GeometryDebug = GeometryValue.None
+			var ShowDiffuse = true
+			var ShowSpecular = true
+			var Skybox = "5822dec85e380cf1:SimpleSkybox"
+			var ClearColor = Real4{0, 0, 0, 1}
+			var DrawSkybox = true
+			var DirectLighting = true
+			var IndirectLighting = true
+			var IndirectIntensity = 1
+			var ToneMap = true
+		}
+	}
+	Cog 
+	{
+		var Name = "EditorCamera"
+		var LinkId = 3
+		Transform 
+		{
+			var Translation = Real3{26.5538044, 3.54653645, 70.3281555}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{-0.0816896558, 0.0776143149, 0.00638105394, 0.99361062}
+		}
+		Camera 
+		{
+			var NearPlane = 0.5
+			var FarPlane = 500
+			var PerspectiveMode = PerspectiveMode.Perspective
+			var FieldOfView = 45
+			var Size = 13.9519997
+		}
+		EditorCameraController 
+		{
+			var ControlMode = ControlMode.Orbit
+			var LookDistance = 68.3610687
+			var VerticalAngle = 0.16406092
+			var HorizontalAngle = 6.12727499
+			var LookTarget = Real3{16.081274, -7.61859894, 3.70307159}
+			var MoveSensitivity = 1
+		}
+		CameraViewport 
+		{
+			var RenderInEditor = true
+			var RenderInGame = false
+			var RenderToViewport = true
+			var ForwardViewportEvents = false
+			var RenderOrder = 0
+			var NormalizedSize = Real2{1, 1}
+			var NormalizedOffset = Real2{0, 0}
+			var Camera = CogPath
 			{
-				string Path = ".",
-				bool ErrorOnResolveToNull = false,
-				bool ErrorOnPathCantCompute = false,
-				bool ErrorOnDirectLinkFail = false,
-				bool UpdateCogOnPathChange = true,
-				bool UpdatePathOnCogChange = true,
-				bool UpdateCogOnInitialize = true,
-				bool ResolvedNullErrorOccurred = false,
-				uint ResolvedCog = 1,
-				CogPathPreference PathPreference0 = CogRelative,
-				CogPathPreference PathPreference1 = SpaceRelative,
-				CogPathPreference PathPreference2 = Absolute,
-			},
-			CogPath Camera = 
+				var Path = "."
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var ResolvedCog = 3
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var Renderer = CogPath
 			{
-				string Path = ":/Camera",
-				bool ErrorOnResolveToNull = false,
-				bool ErrorOnPathCantCompute = false,
-				bool ErrorOnDirectLinkFail = false,
-				bool UpdateCogOnPathChange = true,
-				bool UpdatePathOnCogChange = true,
-				bool UpdateCogOnInitialize = true,
-				bool ResolvedNullErrorOccurred = false,
-				uint ResolvedCog = 2,
-				CogPathPreference PathPreference0 = CogRelative,
-				CogPathPreference PathPreference1 = SpaceRelative,
-				CogPathPreference PathPreference2 = Absolute,
-			},
-			ViewportScaling Scaling = Letterbox,
-			Vec2 Resolution = [4, 3],
-			Vec4 MarginColor = [0, 0, 0, 1],
-		},
-		ForwardRenderer = 
-		{
-			Vec4 ClearColor = [0.104999997, 0.0997499973, 0.0997499973, 1],
-			bool DrawNonVisible = false,
-			bool DrawDebugObjects = true,
-			bool DrawEditorIcons = true,
-			bool EditorIconDepth = true,
-			bool Wireframe = false,
-		},
-		PlayerSpawner = 
-		{
-			string PlayerArchetype = "536dbf75abdc97ad:Player",
-			float DistanceOffset = 2,
-		},
-		LogicFlow = 
-		{
-		},
-		UnitTests = 
-		{
-			int ScreenShotsToTake = 10,
-		},
-	},
-	Cog = 
+				var Path = ":/Renderer"
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var ResolvedCog = 2
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var Resolution = Real2{1280, 720}
+			var ViewportScaling = ViewportScaling.Fill
+			var MarginColor = Real4{0, 0, 0, 1}
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "Camera"
+		var LinkId = 4
+		Transform 
 		{
-			uint Id = 3,
-		},
-		Named = 
+			var Translation = Real3{6, 0, 14.5}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		Camera 
 		{
-			string Name = "EditorCamera",
-		},
-		Transform = 
+			var NearPlane = 0.5
+			var FarPlane = 200
+			var PerspectiveMode = PerspectiveMode.Perspective
+			var FieldOfView = 45
+			var Size = 20
+		}
+		CameraViewport 
 		{
-			Vec3 Translation = [21.5867157, 8.04840755, 59.8555565],
-			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.0605023354, -0.0919159502, -0.00559519278, 0.993911266],
-		},
-		Camera = 
-		{
-			ProjectionMode ProjectionMode = Perspective,
-			Facing Facing = NegativeZ,
-			CameraTransparentSort TransparentSort = InheritFromSpace,
-			float FieldOfView = 45,
-			float NearPlane = 0.5,
-			float FarPlane = 500,
-			float Size = 13.9519997,
-		},
-		EditorCameraController = 
-		{
-			ControlMode ControlMode = Orbit,
-			float LookDistance = 81.5903473,
-			float VerticalAngle = 0.121595904,
-			float HorizontalAngle = 6.46761894,
-			Vec3 LookTarget = [36.4390717, -1.84821439, -19.7588158],
-			float MoveSensitivity = 1,
-		},
-		EditorRenderer = 
-		{
-			Vec4 ClearColor = [0.278430998, 0.278430998, 0.278430998, 1],
-			bool DrawNonVisible = true,
-			bool DrawDebugObjects = true,
-			bool DrawEditorIcons = true,
-			bool Wireframe = false,
-		},
-	},
-	Cog = 
-	{
-		LinkId = 
-		{
-			uint Id = 4,
-		},
-		Named = 
-		{
-			string Name = "TileMap",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [0, 0, 0],
-			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		MultiSprite = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = false,
-			Vec4 Color = [0.244800001, 0.360000014, 0.245951995, 1],
-			BlendMode BlendMode = Alpha,
-			SpriteGeometryMode GeometryMode = ZPlane,
-			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
-		},
-		TileMap = 
-		{
-			string SourceName = "536dc68dc129e94b:Level_TileMap00",
-			string PaletteName = "",
-			float UnitsPerTile = 1,
-			float MeshThickness = 1.20000005,
-		},
-	},
-	Cog = 
-	{
-		LinkId = 
-		{
-			uint Id = 2,
-		},
-		Named = 
-		{
-			string Name = "Camera",
-		},
-		Archetyped = 
-		{
-			string Name = "536dbc509dd96f58:PlayerCamera",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [6.53138018, 0, 14.5],
-			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		Camera = 
-		{
-			ProjectionMode ProjectionMode = Perspective,
-			Facing Facing = NegativeZ,
-			CameraTransparentSort TransparentSort = InheritFromSpace,
-			float FieldOfView = 45,
-			float NearPlane = 0.5,
-			float FarPlane = 200,
-			float Size = 20,
-		},
-		PlayerFollow = 
-		{
-			CogPath PlayerObject = 
+			var RenderInEditor = false
+			var RenderInGame = true
+			var RenderToViewport = true
+			var ForwardViewportEvents = false
+			var RenderOrder = 0
+			var NormalizedSize = Real2{1, 1}
+			var NormalizedOffset = Real2{0, 0}
+			var Camera = CogPath
 			{
-				string Path = ":/Player",
-				bool ErrorOnResolveToNull = false,
-				bool ErrorOnPathCantCompute = false,
-				bool ErrorOnDirectLinkFail = false,
-				bool UpdateCogOnPathChange = true,
-				bool UpdatePathOnCogChange = true,
-				bool UpdateCogOnInitialize = true,
-				bool ResolvedNullErrorOccurred = false,
-				uint ResolvedCog = 4294967293,
-				CogPathPreference PathPreference0 = CogRelative,
-				CogPathPreference PathPreference1 = SpaceRelative,
-				CogPathPreference PathPreference2 = Absolute,
-			},
-			float MinX = 0,
-			float MaxX = 47,
-			float MinY = 0,
-			float MaxY = 0,
-		},
-	},
-	Cog = 
+				var Path = "."
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var ResolvedCog = 4
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var Renderer = CogPath
+			{
+				var Path = ":/Renderer"
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var ResolvedCog = 2
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var Resolution = Real2{1280, 720}
+			var ViewportScaling = ViewportScaling.Fill
+			var MarginColor = Real4{0, 0, 0, 1}
+		}
+		PlayerFollow 
+		{
+			var PlayerObject = CogPath
+			{
+				var Path = ":/Player"
+				var ErrorOnResolveToNull = false
+				var ErrorOnPathCantCompute = false
+				var ErrorOnDirectLinkFail = false
+				var UpdateCogOnPathChange = true
+				var UpdatePathOnCogChange = true
+				var UpdateCogOnInitialize = true
+				var ResolvedNullErrorOccurred = false
+				var ResolvedCog = 4294967293
+				var PathPreference0 = CogPathPreference.CogRelative
+				var PathPreference1 = CogPathPreference.SpaceRelative
+				var PathPreference2 = CogPathPreference.Absolute
+			}
+			var MinX = 0
+			var MaxX = 47
+			var MinY = 0
+			var MaxY = 0
+		}
+	}
+	Cog [InheritId:"536db2bdd321a13a:Door"]
 	{
-		LinkId = 
+		Transform 
 		{
-			uint Id = 5,
-		},
-		Named = 
+			var Translation = Real3{55.5, 0, 0}
+		}
+		Door 
 		{
-			string Name = "Door",
-		},
-		Archetyped = 
-		{
-			string Name = "536db2bdd321a13a:Door",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [55.5, 0, 0],
-			Vec3 Scale = [1, 4, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		BoxCollider = 
-		{
-			bool Ghost = true,
-			bool SendsMessages = true,
-			bool Seamless = false,
-			string MaterialName = "4faa6050b8692851:HardMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-		Door = 
-		{
-			string ToLevel = "536dbf66ae911f78:Sector0102",
-			Enum FromDirection = Left,
-		},
-	},
-	Cog = 
+			var ToLevel = "536dbf66ae911f78:Sector0102"
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "Cube"
+		var LinkId = 5
+		Transform 
 		{
-			uint Id = 6,
-		},
-		Named = 
+			var Translation = Real3{-1.93344998, -1.02322996, 0}
+			var Scale = Real3{6, 1, 1}
+			var Rotation = Quaternion{0, 0, -0.73012203, 0.683317006}
+		}
+		Model 
 		{
-			string Name = "Cube",
-		},
-		Transform = 
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var Material = "583afb5e7bf75e18:ZeroMaterial"
+			var Mesh = "4de0354322b345ae:Cube"
+		}
+		BoxCollider 
 		{
-			Vec3 Translation = [-1.93344998, -1.02322996, 0],
-			Vec3 Scale = [6, 1, 1],
-			Quat Rotation = [0, 0, -0.73012203, 0.683317006],
-		},
-		Model = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = true,
-			string MaterialName = "4de020863e85bb61:DefaultMaterial",
-			string MeshName = "4de0354322b345ae:Cube",
-			Vec4 Color = [1, 1, 1, 1],
-		},
-		BoxCollider = 
-		{
-			bool Ghost = false,
-			bool SendsMessages = true,
-			bool Seamless = true,
-			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-	},
-	Cog = 
+			var Ghost = false
+			var SendsEvents = true
+			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+			var CollisionGroup = "4e740859314e5515:DefaultGroup"
+			var Offset = Real3{0, 0, 0}
+			var HalfSize = Real3{0.5, 0.5, 0.5}
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "Background"
+		var LinkId = 6
+		Transform 
 		{
-			uint Id = 7,
-		},
-		Named = 
+			var Translation = Real3{0, 0, -5}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		MultiSprite 
 		{
-			string Name = "Background",
-		},
-		Transform = 
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var Material = "582c575af53d18c9:AlphaSprite"
+			var VertexColor = Real4{0.501960814, 0.0196078438, 0.0196078438, 1}
+			var GeometryMode = SpriteGeometryMode.ZPlane
+			var AnimationActive = true
+			var AnimationSpeed = 1
+		}
+		TileMap 
 		{
-			Vec3 Translation = [0, 0, -5],
-			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		MultiSprite = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = false,
-			Vec4 Color = [0.5, 0.0199999996, 0.0199999996, 1],
-			BlendMode BlendMode = Alpha,
-			SpriteGeometryMode GeometryMode = ZPlane,
-			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
-		},
-		TileMap = 
-		{
-			string SourceName = "536dab74fe3714a5:Level_TileMap01",
-			string PaletteName = "",
-			float UnitsPerTile = 1,
-			float MeshThickness = 1.20000005,
-		},
-	},
-	Cog = 
+			var Source = "536dab74fe3714a5:Level_TileMap01"
+			var PaletteName = ""
+			var MeshThickness = 1.20000005
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "Background2"
+		var LinkId = 7
+		Transform 
 		{
-			uint Id = 8,
-		},
-		Named = 
+			var Translation = Real3{0, 0, -10}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		MultiSprite 
 		{
-			string Name = "Background2",
-		},
-		Transform = 
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var Material = "582c575af53d18c9:AlphaSprite"
+			var VertexColor = Real4{0.0941176564, 0.10980393, 0.301960796, 1}
+			var GeometryMode = SpriteGeometryMode.ZPlane
+			var AnimationActive = true
+			var AnimationSpeed = 1
+		}
+		TileMap 
 		{
-			Vec3 Translation = [0, 0, -10],
-			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		MultiSprite = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = false,
-			Vec4 Color = [0.0944999978, 0.108884998, 0.300000012, 1],
-			BlendMode BlendMode = Alpha,
-			SpriteGeometryMode GeometryMode = ZPlane,
-			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
-		},
-		TileMap = 
-		{
-			string SourceName = "536daa5bb0e91336:Level_TileMap02",
-			string PaletteName = "",
-			float UnitsPerTile = 1,
-			float MeshThickness = 1.20000005,
-		},
-	},
-	Cog = 
+			var Source = "536daa5bb0e91336:Level_TileMap02"
+			var PaletteName = ""
+			var MeshThickness = 1.20000005
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "Cube"
+		var LinkId = 8
+		Transform 
 		{
-			uint Id = 9,
-		},
-		Named = 
+			var Translation = Real3{0.217045993, -3.35660005, 0}
+			var Scale = Real3{6, 1, 0.899999976}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		Model 
 		{
-			string Name = "Cube",
-		},
-		Transform = 
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var Material = "583afb5e7bf75e18:ZeroMaterial"
+			var Mesh = "4de0354322b345ae:Cube"
+		}
+		RigidBody 
 		{
-			Vec3 Translation = [0.217045993, -3.35660005, 0],
-			Vec3 Scale = [6, 1, 0.899999976],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		Model = 
+			var Velocity = Real3{0, 0, 0}
+			var AngularVelocity = Real3{0, 0, 0}
+			var DynamicState = RigidBodyDynamicState.Kinematic
+			var AllowSleep = true
+			var Asleep = false
+			var RotationLocked = false
+			var Mode2D = Mode2DStates.Mode2D
+		}
+		BoxCollider 
 		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = true,
-			string MaterialName = "4de020863e85bb61:DefaultMaterial",
-			string MeshName = "4de0354322b345ae:Cube",
-			Vec4 Color = [1, 1, 1, 1],
-		},
-		RigidBody = 
+			var Ghost = false
+			var SendsEvents = true
+			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+			var CollisionGroup = "4e740859314e5515:DefaultGroup"
+			var Offset = Real3{0, 0, 0}
+			var HalfSize = Real3{0.5, 0.5, 0.5}
+		}
+		MovingPlatform 
 		{
-			bool Static = false,
-			bool Asleep = false,
-			bool Kinematic = true,
-			bool RotationLocked = false,
-			bool Mode2D = false,
-			bool AllowSleep = true,
-			bool Inherit2DMode = true,
-			Vec3 Velocity = [0, 0, 0],
-			Vec3 AngularVelocity = [0, 0, 0],
-		},
-		BoxCollider = 
-		{
-			bool Ghost = false,
-			bool SendsMessages = true,
-			bool Seamless = true,
-			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-		MovingPlatform = 
-		{
-			Vec3 Movement = [-2, 2, 0],
-			float MovementTime = 2,
-		},
-	},
-	Cog = 
+			var Movement = Real3{-2, 2, 0}
+			var MovementTime = 2
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "Cube"
+		var LinkId = 9
+		Transform 
 		{
-			uint Id = 10,
-		},
-		Named = 
+			var Translation = Real3{0.747970998, -1.02322996, 0}
+			var Scale = Real3{6, 1, 1}
+			var Rotation = Quaternion{0, 0, -0.677037001, 0.735949993}
+		}
+		Model 
 		{
-			string Name = "Cube",
-		},
-		Transform = 
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var Material = "583afb5e7bf75e18:ZeroMaterial"
+			var Mesh = "4de0354322b345ae:Cube"
+		}
+		BoxCollider 
 		{
-			Vec3 Translation = [0.747970998, -1.02322996, 0],
-			Vec3 Scale = [6, 1, 1],
-			Quat Rotation = [0, 0, -0.677037001, 0.735949993],
-		},
-		Model = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = true,
-			string MaterialName = "4de020863e85bb61:DefaultMaterial",
-			string MeshName = "4de0354322b345ae:Cube",
-			Vec4 Color = [1, 1, 1, 1],
-		},
-		BoxCollider = 
-		{
-			bool Ghost = false,
-			bool SendsMessages = true,
-			bool Seamless = true,
-			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-	},
-	Cog = 
+			var Ghost = false
+			var SendsEvents = true
+			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+			var CollisionGroup = "4e740859314e5515:DefaultGroup"
+			var Offset = Real3{0, 0, 0}
+			var HalfSize = Real3{0.5, 0.5, 0.5}
+		}
+	}
+	Cog 
 	{
-		LinkId = 
+		var Name = "Cube"
+		var LinkId = 10
+		Transform 
 		{
-			uint Id = 11,
-		},
-		Named = 
+			var Translation = Real3{-4.23542976, 3, 0}
+			var Scale = Real3{1, 4, 1}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		Model 
 		{
-			string Name = "Cube",
-		},
-		Transform = 
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var Material = "583afb5e7bf75e18:ZeroMaterial"
+			var Mesh = "4de0354322b345ae:Cube"
+		}
+		BoxCollider 
 		{
-			Vec3 Translation = [-4.23542976, 3, 0],
-			Vec3 Scale = [1, 4, 1],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		Model = 
+			var Ghost = false
+			var SendsEvents = true
+			var Material = "4de020863e872da8:DefaultPhysicsMaterial"
+			var CollisionGroup = "4e740859314e5515:DefaultGroup"
+			var Offset = Real3{0, 0, 0}
+			var HalfSize = Real3{0.5, 0.5, 0.5}
+		}
+		RigidBody 
 		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = true,
-			string MaterialName = "4de020863e85bb61:DefaultMaterial",
-			string MeshName = "4de0354322b345ae:Cube",
-			Vec4 Color = [1, 1, 1, 1],
-		},
-		BoxCollider = 
+			var Velocity = Real3{0, 0, 0}
+			var AngularVelocity = Real3{0, 0, 0}
+			var DynamicState = RigidBodyDynamicState.Dynamic
+			var AllowSleep = true
+			var Asleep = false
+			var RotationLocked = false
+			var Mode2D = Mode2DStates.Mode2D
+		}
+		MovingPlatform 
 		{
-			bool Ghost = false,
-			bool SendsMessages = true,
-			bool Seamless = true,
-			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-		RigidBody = 
+			var Movement = Real3{0, 0, 0}
+			var MovementTime = 0.5
+		}
+	}
+	Cog 
+	{
+		var Name = "TileMap"
+		var LinkId = 11
+		Transform 
 		{
-			bool Static = false,
-			bool Asleep = false,
-			bool Kinematic = true,
-			bool RotationLocked = false,
-			bool Mode2D = false,
-			bool AllowSleep = true,
-			bool Inherit2DMode = true,
-			Vec3 Velocity = [0, 0, 0],
-			Vec3 AngularVelocity = [0, 0, 0],
-		},
-		MovingPlatform = 
+			var Translation = Real3{0, 0, 0}
+			var Scale = Real3{1, 1, 1}
+			var Rotation = Quaternion{0, 0, 0, 1}
+		}
+		MultiSprite 
 		{
-			Vec3 Movement = [0, 0, 0],
-			float MovementTime = 0.5,
-		},
-	},
-},
+			var Visible = true
+			var ViewCulling = true
+			var VisibilityEvents = true
+			var Material = "582c575af53d18c9:AlphaSprite"
+			var VertexColor = Real4{0.24313727, 0.360784322, 0.247058839, 1}
+			var GeometryMode = SpriteGeometryMode.ZPlane
+			var AnimationActive = true
+			var AnimationSpeed = 1
+		}
+		TileMap 
+		{
+			var Source = "536dc68dc129e94b:Level_TileMap00"
+			var PaletteName = ""
+			var MeshThickness = 1.20000005
+		}
+	}
+}
