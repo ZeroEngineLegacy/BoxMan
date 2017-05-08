@@ -69,8 +69,7 @@ class UnitTests : ZilchComponent
     {
         if (this.ScreenShotsTaken >= this.ScreenShotsToTake)
         {
-            this.GameSession.Quit();
-            Zero.Editor.EditGameSession.Quit();
+            Zero.Engine.Terminate();
             return;
         }
         
