@@ -13,7 +13,7 @@ Cog
 	{
 		var Ghost = true
 		var SendsEvents = true
-		var Material = "4faa6050b8692851:HardMaterial"
+		var Material = "4de020863e872da8:DefaultPhysicsMaterial"
 		var CollisionGroup = "4e740859314e5515:DefaultGroup"
 		var Offset = Real3{0, 0, 0}
 		var HalfSize = Real3{0.5, 0.5, 0.5}
